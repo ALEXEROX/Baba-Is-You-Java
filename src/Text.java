@@ -5,21 +5,21 @@ public class Text extends GameObject {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
     private String _word;
+    private TextType _textType;
     private Color _color;
 
-    public Text(String word, Position pos){
+    public Text(TextType textType, String word, Position pos){
         super("Text", pos);
-        createText(word, pos, DEFAULT_COLOR);
+        createText(textType, word, pos, DEFAULT_COLOR);
     }
 
-    public Text(String word, Position pos, Color color){
+    public Text(TextType textType, String word, Position pos, Color color){
         super("Text", pos);
-        createText(word, pos, color);
+        createText(textType, word, pos, color);
     }
 
-    private void createText(String word, Position pos, Color color){
-        _word = word;
-        _color = color;
+    private void createText(TextType textType, String word, Position pos, Color color){
+        _textType = textType; _word = word; _color = color;
         _image = createOptimalTextImage(word);
     }
 
@@ -70,5 +70,14 @@ public class Text extends GameObject {
         }
 
         return optimalSize;
+    }
+}
+
+enum TextType{
+    SUBJECT(0),
+    OPERATOR(1),
+    PROPERTY(2);
+
+    TextType(int i){
     }
 }

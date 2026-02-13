@@ -45,7 +45,7 @@ public class Level extends JPanel {
 
     //============================Управление-уровнем================================
 
-    public void makeMove(Direcion dir){
+    public void makeMove(Direction dir){
 
     }
 
@@ -64,7 +64,7 @@ public class Level extends JPanel {
     public HashSet<Rule> findRules(Position pos){
         HashSet<Rule> rules = new HashSet<>();
 
-        if(_gameObjectsMap.get(pos) != null){
+        if(_gameObjectsMap.get(pos).getClass().equals(Text.class)){
 
         }
 
@@ -94,7 +94,7 @@ public class Level extends JPanel {
     public static Level generateLevel(){
         Subject sub = new Subject("BABA", new Position(1, 1));
         Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        Text text = new Text("BABAS", new Position(2, 2), Color.RED);
+        Text text = new Text(TextType.SUBJECT, "BABAS", new Position(2, 2), Color.RED);
         List<GameObject> gameObjects = new ArrayList<GameObject>();
         gameObjects.add(sub);
         gameObjects.add(sub2);
