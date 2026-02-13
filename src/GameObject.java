@@ -1,11 +1,11 @@
 import java.awt.image.BufferedImage;
 
 public abstract class GameObject {
-    private String _type;
+    private GameObjectType _type;
     private Position _pos;
     protected BufferedImage _image;
 
-    public GameObject(String type, Position pos) {
+    protected GameObject(GameObjectType type, Position pos) {
         _type = type;
         _pos = pos;
     }
@@ -29,4 +29,9 @@ public abstract class GameObject {
     public BufferedImage getImage(){
         return _image;
     }
+}
+
+enum GameObjectType{
+    SUBJECT,
+    TEXT;
 }

@@ -33,7 +33,7 @@ public class Text extends GameObject {
         // Находим оптимальный размер шрифта
         int fontSize = findOptimalFontSize(g2d, text, 90, 90);
 
-        Font font = new Font("Cascadia Code", Font.BOLD, fontSize);
+        Font font = new Font("Montserrat", Font.BOLD, fontSize);
         g2d.setFont(font);
 
         FontMetrics fm = g2d.getFontMetrics();
@@ -74,10 +74,7 @@ public class Text extends GameObject {
 }
 
 enum TextType{
-    SUBJECT(0),
-    OPERATOR(1),
-    PROPERTY(2);
-
-    TextType(int i){
-    }
+    SUBJECT,
+    OPERATOR,
+    PROPERTY;
 }
