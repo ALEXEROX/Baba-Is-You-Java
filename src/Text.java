@@ -4,26 +4,26 @@ import java.awt.image.BufferedImage;
 public class Text extends GameObject {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
-    private String _text;
+    private String _word;
     private Color _color;
 
-    public Text(String text, Position pos){
+    public Text(String word, Position pos){
         super("Text", pos);
-        CreateText(text, pos, DEFAULT_COLOR);
+        createText(word, pos, DEFAULT_COLOR);
     }
 
-    public Text(String text, Position pos, Color color){
+    public Text(String word, Position pos, Color color){
         super("Text", pos);
-        CreateText(text, pos, color);
+        createText(word, pos, color);
     }
 
-    private void CreateText(String text, Position pos, Color color){
-        _text = text;
+    private void createText(String word, Position pos, Color color){
+        _word = word;
         _color = color;
-        _image = createOptimalTextImage(text);
+        _image = createOptimalTextImage(word);
     }
 
-    public BufferedImage createOptimalTextImage(String text) {
+    private BufferedImage createOptimalTextImage(String text) {
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
 
@@ -33,7 +33,7 @@ public class Text extends GameObject {
         // Находим оптимальный размер шрифта
         int fontSize = findOptimalFontSize(g2d, text, 90, 90);
 
-        Font font = new Font("Arial", Font.BOLD, fontSize);
+        Font font = new Font("Cascadia Code", Font.BOLD, fontSize);
         g2d.setFont(font);
 
         FontMetrics fm = g2d.getFontMetrics();

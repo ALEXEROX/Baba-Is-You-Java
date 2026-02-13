@@ -1,9 +1,13 @@
 public class Position {
-    private int _x;
-    private int _y;
+    protected int _x;
+    protected int _y;
 
     public Position(int x, int y){
         _x = x; _y = y;
+    }
+
+    public Position() {
+        new Position(0, 0);
     }
 
     public int getX(){

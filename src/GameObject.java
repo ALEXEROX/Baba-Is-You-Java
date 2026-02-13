@@ -10,23 +10,23 @@ public abstract class GameObject {
         _pos = pos;
     }
 
-    public Position GetPosition(){
+    public Position getPosition(){
         return _pos;
     }
 
-    public void Move(Position direction){
+    public void move(Position direction){
 
     }
 
-    public void Transform(String type){
+    public void transform(String type){
 
     }
 
-    public void Destroy(){
+    public void destroy(){
 
     }
 
-    public BufferedImage GetImage(){
+    public BufferedImage getImage(){
         return _image;
     }
 }

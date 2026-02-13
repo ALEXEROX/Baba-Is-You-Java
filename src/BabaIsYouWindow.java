@@ -1,42 +1,25 @@
 import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class BabaIsYouWindow extends JFrame {
 
     private Level _level;
+    private int _levelSuccess;
 
     public BabaIsYouWindow(){
-        JPanel content = (JPanel)getContentPane();
-        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS) );
-
-        Subject sub = new Subject("Baba", new Position(1, 1));
-        Subject sub2 = new Subject("Babas", new Position(2, 1));
-        Text text = new Text("Babas", new Position(2, 2), Color.RED);
-        List<GameObject> gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(sub);
-        gameObjects.add(sub2);
-        gameObjects.add(text);
-
-        Level level = new Level(gameObjects);
-
-        LoadLevel(level);
-
-        pack();
-        this.setResizable(false);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        createContent();
+        loadLevel(Level.generateLevel());
+        createKeyListener();
+        buildWindow();
     }
 
-    public void LoadLevel(Level level){
+    public void loadLevel(Level level){
         if(_level != null)
             remove(_level);
 
         _level = level;
-        _level.Build(this);
+        _level.build(this);
     }
 
     public static void main(String[] args) {
@@ -47,4 +30,39 @@ public class BabaIsYouWindow extends JFrame {
         });
     }
 
+    private void createContent(){
+        JPanel content = (JPanel)getContentPane();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS) );
+    }
+
+    private void buildWindow(){
+        pack();
+        this.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void createKeyListener() {
+        KeyListener listener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                handlingKey(e.getKeyChar());
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                handlingKey(e.getKeyChar());
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+    private void handlingKey(char key){
+
+    }
 }
