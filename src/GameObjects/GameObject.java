@@ -12,6 +12,10 @@ public abstract class GameObject {
         _gameObjectType = gameObjectType; _type = type; _pos = pos;
     }
 
+    public String getText(){
+        return _type;
+    }
+
     public boolean isText(){
         return _gameObjectType == GameObjectType.TEXT;
     }
@@ -24,16 +28,8 @@ public abstract class GameObject {
         return _pos;
     }
 
-    public void move(Position direction){
-
-    }
-
-    public void transform(String type){
-
-    }
-
-    public void destroy(){
-
+    public void move(Direction direction){
+        _pos = _pos.getNeightboor(direction);
     }
 
     public BufferedImage getImage(){

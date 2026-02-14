@@ -1,8 +1,14 @@
 package Core;
 
+import GameObjects.*;
+import Rules.*;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BabaIsYouWindow extends JFrame {
 
@@ -11,7 +17,16 @@ public class BabaIsYouWindow extends JFrame {
 
     public BabaIsYouWindow(){
         createContent();
-        loadLevel(Level.generateLevel());
+        //loadLevel(generateLevel());
+        Subject sub = new Subject("BABA", new Position(1, 1));
+        Subject sub2 = new Subject("BABAS", new Position(2, 1));
+        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
+        List<GameObject> gameObjects = new ArrayList<GameObject>();
+        gameObjects.add(sub);
+        gameObjects.add(sub2);
+        gameObjects.add(textBlock);
+        loadLevel(new Level(gameObjects));
+
         createKeyListener();
         buildWindow();
     }
@@ -22,6 +37,18 @@ public class BabaIsYouWindow extends JFrame {
 
         _level = level;
         _level.build(this);
+    }
+
+    public static Level generateLevel(){
+        Subject sub = new Subject("BABA", new Position(1, 1));
+        Subject sub2 = new Subject("BABAS", new Position(2, 1));
+        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
+        List<GameObject> gameObjects = new ArrayList<GameObject>();
+        gameObjects.add(sub);
+        gameObjects.add(sub2);
+        gameObjects.add(textBlock);
+
+        return new Level(gameObjects);
     }
 
     public static void main(String[] args) {

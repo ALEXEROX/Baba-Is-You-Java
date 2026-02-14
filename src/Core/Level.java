@@ -23,7 +23,6 @@ public class Level extends JPanel {
     //==========================Поля================================
 
     private List<GameObject> _gameObjects;
-    private Map<Position, List<GameObject>> _gameObjectsMap;
     private HashSet<Rule> _rules;
 //    private Core.BabaIsYouWindow _window;
 
@@ -32,7 +31,6 @@ public class Level extends JPanel {
 
     public Level(){
         _gameObjects = new ArrayList<>();
-        _gameObjectsMap = new HashMap<Position, List<GameObject>>();
         makeDefaultRules();
 
         setBounds(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
@@ -43,27 +41,64 @@ public class Level extends JPanel {
     public Level(List<GameObject> gameObjects){
         this();
         _gameObjects = gameObjects;
+    }
+
+
+    //==============================Гетеры-сетеры===================================
+
+    /**
+     * @param pos Позиция "ячейки"
+     * @return Список объектов, находящихся в "ячейке"
+     */
+    public List<GameObject> getCell(Position pos){
+        List<GameObject> gameObjects = new ArrayList<>();
 
         for(GameObject gameObject : _gameObjects){
-            putGameObjectIntoMap(gameObject);
+            if(gameObject.getPosition() == pos){
+                gameObjects.add(gameObject);
+            }
         }
+
+        return gameObjects;
     }
 
 
     //============================Управление-уровнем================================
 
-    public void makeMove(Direction dir){
 
+    /**
+     * Вызывается по каждому действию игрока
+     * @param dir направление движения игрока
+     */
+    public void makeStep(Direction dir){
+        calculateRules();
     }
 
+    /**
+     * Находит правила, описанные на поле
+     */
     public void calculateRules(){
         makeDefaultRules();
 
-        for(Map.Entry<Position, List<GameObject>> map : _gameObjectsMap.entrySet()){
-            _rules.addAll(findRules(map.getKey()));
+        for(GameObject gameObject : _gameObjects){
+            _rules.addAll(findRules(gameObject.getPosition()));
         }
+        
+        sortRules();
     }
 
+    /**
+     * Сортирует правила по порядку приоритета
+     */
+    private void sortRules() {
+    }
+
+
+    /**
+     * Находит правила, корень которых находится в положении pos
+     * @param pos Начальное положение предпологаемых правил
+     * @return Уникальный список правил
+     */
     public HashSet<Rule> findRules(Position pos){
         HashSet<Rule> rules = new HashSet<>();
 
@@ -75,15 +110,25 @@ public class Level extends JPanel {
         return rules;
     }
 
+
+    /**
+     * Находит словосочетание из трех в ряд стоящих ячеек
+     * @param pos Положение первого слова фразы
+     * @param dir Направление поиска
+     * @return Сочетание слов
+     */
     private List<RuleText> findPhrase(Position pos, Direction dir){
         List<RuleText> phrase = new ArrayList<>();
+        List<GameObject> cell = new ArrayList<>();
 
         Position currentPos = pos;
         RuleText ruleText;
 
         for(int i = 0; i < 3; i++) {
             ruleText = null;
-            for (GameObject gameObject : _gameObjectsMap.get(currentPos)) {
+            cell = getCell(currentPos);
+
+            for (GameObject gameObject : cell) {
                 if (gameObject.isText()){
                     ruleText = ((TextBlock) gameObject).getRuleText();
                 }
@@ -95,48 +140,63 @@ public class Level extends JPanel {
         return phrase;
     }
 
-    private boolean IsRule(List<String> phrase){
+    /**
+     * @param phrase Список из трех слов типа RuleText
+     * @return Может ли список считаться правилом
+     */
+    private boolean IsRule(List<RuleText> phrase){
         return false;
     }
 
+    /**
+     * Проверяет, не находится ли поле в состоянии победы или поражения
+     * @return  1 - победа, 0 - продолжение, -1 - поражение
+     */
     public int checkSuccess(){
 
 
         return 0;
     }
 
-    private void putGameObjectIntoMap(GameObject obj){
-        List<GameObject> list = new ArrayList<>();
-        Position pos = obj.getPosition();
+    /**
+     * Превращает один объект в другой
+     * @param from Исходный объект
+     * @param to Тип объекта, в который надо превратить исходный.
+     *           При превращении Subject в TextBlock, он превращается в
+     *           SubjectName с именем исходного объекта.
+     */
+    public void transformGameObject(Subject from, String to){
+        Position pos = from.getPosition();
+        GameObject newGameObject;
 
-        if(_gameObjectsMap.get(pos) != null) {
-            list = _gameObjectsMap.get(pos);
+        if(!Objects.equals(to, "TEXT")){
+            newGameObject = new Subject(to, pos);
+        }
+        else{
+            SubjectName subjectName = new SubjectName(from.getText());
+            newGameObject = new TextBlock(subjectName, from.getText(), pos);
         }
 
-        list.add(obj);
-        _gameObjectsMap.put(pos, list);
+        _gameObjects.remove(from);
+        _gameObjects.add(newGameObject);
     }
 
     //==============================Создание-уровня=================================
 
-    public static Level generateLevel(){
-        Subject sub = new Subject("BABA", new Position(1, 1));
-        Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
-        List<GameObject> gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(sub);
-        gameObjects.add(sub2);
-        gameObjects.add(textBlock);
 
-        return new Level(gameObjects);
-    }
-
+    /**
+     * Обнуляет текущий список правил и создает список правил по умолчанию
+     */
     public void makeDefaultRules(){
         _rules = new HashSet<>();
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         _rules.add(text_is_push);
     }
 
+    /**
+     * Добавляет уровень в игровое окно
+     * @param window окно добавления
+     */
     public void build(BabaIsYouWindow window){
 //        this._window = window;
 //        this._window.add(this);
