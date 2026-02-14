@@ -1,3 +1,5 @@
+package Rules;
+
 public class Rule {
     private String _leftPart;
     private String _operator;

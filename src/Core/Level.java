@@ -1,3 +1,8 @@
+package Core;
+
+import Rules.*;
+import GameObjects.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -18,7 +23,7 @@ public class Level extends JPanel {
     private List<GameObject> _gameObjects;
     private Map<Position, List<GameObject>> _gameObjectsMap;
     private HashSet<Rule> _rules;
-//    private BabaIsYouWindow _window;
+//    private Core.BabaIsYouWindow _window;
 
 
     //===============================Конструкторы=========================================
@@ -51,24 +56,43 @@ public class Level extends JPanel {
 
     public void calculateRules(){
         makeDefaultRules();
-        for(int x = 0; x < WIDTH; x++){
-            for(int y = 0; y < HEIGHT; y++){
-                Position pos = new Position(x, y);
-                if(_gameObjectsMap.get(pos) != null){
-                    _rules.addAll(findRules(new Position(x, y)));
-                }
-            }
+
+        for(Map.Entry<Position, List<GameObject>> map : _gameObjectsMap.entrySet()){
+            _rules.addAll(findRules(map.getKey()));
         }
     }
 
     public HashSet<Rule> findRules(Position pos){
         HashSet<Rule> rules = new HashSet<>();
 
-        if(_gameObjectsMap.get(pos).getClass().equals(Text.class)){
-
-        }
+        List<String> rightToLeftPhrase = findPhrase(pos, Direction.RIGHT);
+        List<String> topToDownPhrase = findPhrase(pos, Direction.DOWN);
 
         return rules;
+    }
+
+    private List<String> findPhrase(Position pos, Direction dir){
+        List<String> phrase = new ArrayList<>();
+
+        Position currentPos = pos;
+        String word;
+
+        for(int i = 0; i < 3; i++) {
+            word = "";
+            for (GameObject gameObject : _gameObjectsMap.get(currentPos)) {
+                if (gameObject.isText()){
+                    word = ((TextBlock) gameObject).getText();
+                }
+            }
+            phrase.add(word);
+            currentPos = currentPos.getNeightboor(dir);
+        }
+
+        return phrase;
+    }
+
+    private boolean IsRule(List<String> phrase){
+        return false;
     }
 
     public int checkSuccess(){
@@ -94,11 +118,11 @@ public class Level extends JPanel {
     public static Level generateLevel(){
         Subject sub = new Subject("BABA", new Position(1, 1));
         Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        Text text = new Text(TextType.SUBJECT, "BABAS", new Position(2, 2), Color.RED);
+        TextBlock textBlock = new TextBlock(TextType.SUBJECTNAME, "BABAS", new Position(2, 2), Color.RED);
         List<GameObject> gameObjects = new ArrayList<GameObject>();
         gameObjects.add(sub);
         gameObjects.add(sub2);
-        gameObjects.add(text);
+        gameObjects.add(textBlock);
 
         return new Level(gameObjects);
     }

@@ -1,21 +1,39 @@
+package GameObjects;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Text extends GameObject {
+public class TextBlock extends GameObject {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
     private String _word;
     private TextType _textType;
     private Color _color;
 
-    public Text(TextType textType, String word, Position pos){
-        super("Text", pos);
+    public TextBlock(TextType textType, String word, Position pos){
+        super(GameObjectType.TEXT, word, pos);
         createText(textType, word, pos, DEFAULT_COLOR);
     }
 
-    public Text(TextType textType, String word, Position pos, Color color){
-        super("Text", pos);
+    public TextBlock(TextType textType, String word, Position pos, Color color){
+        super(GameObjectType.TEXT, word, pos);
         createText(textType, word, pos, color);
+    }
+
+    public String getText(){
+        return _word;
+    }
+
+    public boolean isName(){
+        return _textType == TextType.SUBJECTNAME;
+    }
+
+    public boolean isOperator(){
+        return _textType == TextType.OPERATOR;
+    }
+
+    public boolean isProperty(){
+        return _textType == TextType.PROPERTY;
     }
 
     private void createText(TextType textType, String word, Position pos, Color color){
@@ -73,8 +91,3 @@ public class Text extends GameObject {
     }
 }
 
-enum TextType{
-    SUBJECT,
-    OPERATOR,
-    PROPERTY;
-}

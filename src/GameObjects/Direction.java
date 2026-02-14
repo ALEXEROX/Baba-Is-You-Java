@@ -1,25 +1,6 @@
-public class Position {
-    private int _x;
-    private int _y;
+package GameObjects;
 
-    public Position(int x, int y){
-        _x = x; _y = y;
-    }
-
-    public Position() {
-        new Position(0, 0);
-    }
-
-    public int getX(){
-        return _x;
-    }
-
-    public int getY(){
-        return _y;
-    }
-}
-
-enum Direction {
+public enum Direction {
 
     STAY(new Position(0, 0)),
     UP(new Position(0, -1)),
