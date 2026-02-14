@@ -1,5 +1,8 @@
 package GameObjects;
 
+import Rules.Rule;
+import Rules.RuleText;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -7,37 +10,29 @@ public class TextBlock extends GameObject {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
     private String _word;
-    private TextType _textType;
+    private RuleText _ruleText;
     private Color _color;
 
-    public TextBlock(TextType textType, String word, Position pos){
+    public TextBlock(RuleText ruleText, String word, Position pos){
         super(GameObjectType.TEXT, word, pos);
-        createText(textType, word, pos, DEFAULT_COLOR);
+        createText(ruleText, word, pos, DEFAULT_COLOR);
     }
 
-    public TextBlock(TextType textType, String word, Position pos, Color color){
+    public TextBlock(RuleText ruleText, String word, Position pos, Color color){
         super(GameObjectType.TEXT, word, pos);
-        createText(textType, word, pos, color);
+        createText(ruleText, word, pos, color);
     }
 
     public String getText(){
         return _word;
     }
 
-    public boolean isName(){
-        return _textType == TextType.SUBJECTNAME;
+    public RuleText getRuleText(){
+        return _ruleText;
     }
 
-    public boolean isOperator(){
-        return _textType == TextType.OPERATOR;
-    }
-
-    public boolean isProperty(){
-        return _textType == TextType.PROPERTY;
-    }
-
-    private void createText(TextType textType, String word, Position pos, Color color){
-        _textType = textType; _word = word; _color = color;
+    private void createText(RuleText ruleText, String word, Position pos, Color color){
+        _ruleText = ruleText; _word = word; _color = color;
         _image = createOptimalTextImage(word);
     }
 

@@ -2,6 +2,8 @@ package Core;
 
 import Rules.*;
 import GameObjects.*;
+import Rules.Features.*;
+import Rules.Operators.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,26 +67,28 @@ public class Level extends JPanel {
     public HashSet<Rule> findRules(Position pos){
         HashSet<Rule> rules = new HashSet<>();
 
-        List<String> rightToLeftPhrase = findPhrase(pos, Direction.RIGHT);
-        List<String> topToDownPhrase = findPhrase(pos, Direction.DOWN);
+        List<RuleText> rightToLeftPhrase = findPhrase(pos, Direction.RIGHT);
+        List<RuleText> topToDownPhrase = findPhrase(pos, Direction.DOWN);
+
+
 
         return rules;
     }
 
-    private List<String> findPhrase(Position pos, Direction dir){
-        List<String> phrase = new ArrayList<>();
+    private List<RuleText> findPhrase(Position pos, Direction dir){
+        List<RuleText> phrase = new ArrayList<>();
 
         Position currentPos = pos;
-        String word;
+        RuleText ruleText;
 
         for(int i = 0; i < 3; i++) {
-            word = "";
+            ruleText = null;
             for (GameObject gameObject : _gameObjectsMap.get(currentPos)) {
                 if (gameObject.isText()){
-                    word = ((TextBlock) gameObject).getText();
+                    ruleText = ((TextBlock) gameObject).getRuleText();
                 }
             }
-            phrase.add(word);
+            phrase.add(ruleText);
             currentPos = currentPos.getNeightboor(dir);
         }
 
@@ -118,7 +122,7 @@ public class Level extends JPanel {
     public static Level generateLevel(){
         Subject sub = new Subject("BABA", new Position(1, 1));
         Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        TextBlock textBlock = new TextBlock(TextType.SUBJECTNAME, "BABAS", new Position(2, 2), Color.RED);
+        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
         List<GameObject> gameObjects = new ArrayList<GameObject>();
         gameObjects.add(sub);
         gameObjects.add(sub2);
@@ -129,7 +133,7 @@ public class Level extends JPanel {
 
     public void makeDefaultRules(){
         _rules = new HashSet<>();
-        Rule text_is_push = new Rule("TEXT", "IS", "PUSH");
+        Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         _rules.add(text_is_push);
     }
 
