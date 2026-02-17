@@ -3,14 +3,14 @@ package Rules.Features;
 import GameObjects.*;
 import Rules.*;
 
-public class PUSH extends Feature {
+public class YOU extends Feature {
 
-    public PUSH(){
-        _word = "PUSH";
+    public YOU(){
+        _word = "YOU";
     }
 
     @Override
     public void action(Subject first, Subject second, Direction direction) {
-
+        first.prepareMove(direction);
     }
 }

@@ -1,10 +1,10 @@
 package Rules.Operators;
 
-import GameObjects.Subject;
-import Rules.Feature;
-import Rules.Operand;
-import Rules.Operator;
-import Rules.SubjectName;
+import Core.*;
+import GameObjects.*;
+import Rules.*;
+
+import java.util.*;
 
 public class IS extends Operator {
 
@@ -18,13 +18,18 @@ public class IS extends Operator {
     }
 
     @Override
-    public void action(Subject subject, Operand right) {
-        if(right.getClass() == SubjectName.class){
+    public void action(Level level, Operand left, Operand right) {
+        List<GameObject> gameObjects = level.getGameObjects();
 
-        }
-        else
-        {
-
+        for(GameObject gameObject: gameObjects) {
+            if(gameObject.getClass()==Subject.class &&
+                    gameObject.getName().equals(left.getText())) {
+                if (right.getClass() == SubjectName.class) {
+                    gameObject.transform(new Subject(right.getText(), gameObject.getPosition()));
+                } else {
+                    gameObject.addFeature((Feature) right);
+                }
+            }
         }
     }
 }

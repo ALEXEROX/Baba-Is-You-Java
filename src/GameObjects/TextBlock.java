@@ -1,7 +1,6 @@
 package GameObjects;
 
-import Rules.Rule;
-import Rules.RuleText;
+import Rules.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,17 +12,17 @@ public class TextBlock extends GameObject {
     private RuleText _ruleText;
     private Color _color;
 
-    public TextBlock(RuleText ruleText, String word, Position pos){
-        super(GameObjectType.TEXT, word, pos);
-        createText(ruleText, word, pos, DEFAULT_COLOR);
+    public TextBlock(RuleText ruleText, Position pos){
+        super(GameObjectType.TEXT, ruleText.getText(), pos);
+        createText(ruleText, ruleText.getText(), pos, DEFAULT_COLOR);
     }
 
-    public TextBlock(RuleText ruleText, String word, Position pos, Color color){
-        super(GameObjectType.TEXT, word, pos);
-        createText(ruleText, word, pos, color);
+    public TextBlock(RuleText ruleText, Position pos, Color color){
+        super(GameObjectType.TEXT, ruleText.getText(), pos);
+        createText(ruleText, ruleText.getText(), pos, color);
     }
 
-    public String getText(){
+    public String getName(){
         return _word;
     }
 

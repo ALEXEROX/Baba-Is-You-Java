@@ -24,18 +24,14 @@ public class Level extends JPanel {
 
     private List<GameObject> _gameObjects;
     private HashSet<Rule> _rules;
-//    private Core.BabaIsYouWindow _window;
 
 
-    //===============================Конструкторы=========================================
+    //====================================Конструкторы======================================
 
     public Level(){
         _gameObjects = new ArrayList<>();
+        createScreen();
         makeDefaultRules();
-
-        setBounds(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
-        setPreferredSize(new Dimension(WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE) );
-        setBackground(BACKGOUND_COLOR);
     }
 
     public Level(List<GameObject> gameObjects){
@@ -43,8 +39,14 @@ public class Level extends JPanel {
         _gameObjects = gameObjects;
     }
 
+    private void createScreen() {
+        setBounds(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
+        setPreferredSize(new Dimension(WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE) );
+        setBackground(BACKGOUND_COLOR);
+    }
 
-    //==============================Гетеры-сетеры===================================
+
+    //================================Гетеры-сетеры===================================
 
     /**
      * @param pos Позиция "ячейки"
@@ -62,6 +64,10 @@ public class Level extends JPanel {
         return gameObjects;
     }
 
+    public List<GameObject> getGameObjects(){
+        return _gameObjects;
+    }
+
 
     //============================Управление-уровнем================================
 
@@ -72,6 +78,37 @@ public class Level extends JPanel {
      */
     public void makeStep(Direction dir){
         calculateRules();
+        releaseRules();
+        releaseFeatures(dir);
+
+        moveGameObjects();
+        repaint();
+    }
+
+    private void moveGameObjects() {
+        for(GameObject gameObject: _gameObjects){
+            gameObject.move();
+        }
+    }
+
+
+    /**
+     * Выполняет правила по очереди
+     */
+    private void releaseRules() {
+        for(Rule rule : _rules){
+            rule.release(this);
+        }
+    }
+
+    private void releaseFeatures(Direction direction){
+        for(GameObject gameObject : _gameObjects){
+            if(gameObject.getClass() == Subject.class) {
+                for (Feature feature : gameObject.getFeatures()) {
+                    feature.action((Subject) gameObject, null, direction);
+                }
+            }
+        }
     }
 
     /**
@@ -80,9 +117,9 @@ public class Level extends JPanel {
     public void calculateRules(){
         makeDefaultRules();
 
-        for(GameObject gameObject : _gameObjects){
-            _rules.addAll(findRules(gameObject.getPosition()));
-        }
+//        for(GameObject gameObject : _gameObjects){
+//            _rules.addAll(findRules(gameObject.getPosition()));
+//        }
         
         sortRules();
     }
@@ -105,7 +142,7 @@ public class Level extends JPanel {
         List<RuleText> rightToLeftPhrase = findPhrase(pos, Direction.RIGHT);
         List<RuleText> topToDownPhrase = findPhrase(pos, Direction.DOWN);
 
-
+        // TODO
 
         return rules;
     }
@@ -129,7 +166,7 @@ public class Level extends JPanel {
             cell = getCell(currentPos);
 
             for (GameObject gameObject : cell) {
-                if (gameObject.isText()){
+                if (gameObject.isTextBlock()){
                     ruleText = ((TextBlock) gameObject).getRuleText();
                 }
             }
@@ -165,7 +202,11 @@ public class Level extends JPanel {
      *           При превращении Subject в TextBlock, он превращается в
      *           SubjectName с именем исходного объекта.
      */
-    public void transformGameObject(Subject from, String to){
+
+
+    //===========================Управление-объектами===============================
+
+    public void transformGameObject(GameObject from, String to){
         Position pos = from.getPosition();
         GameObject newGameObject;
 
@@ -173,16 +214,20 @@ public class Level extends JPanel {
             newGameObject = new Subject(to, pos);
         }
         else{
-            SubjectName subjectName = new SubjectName(from.getText());
-            newGameObject = new TextBlock(subjectName, from.getText(), pos);
+            SubjectName subjectName = new SubjectName(from.getName());
+            newGameObject = new TextBlock(subjectName, pos);
         }
 
         _gameObjects.remove(from);
         _gameObjects.add(newGameObject);
     }
 
-    //==============================Создание-уровня=================================
+    public void destroyGameObject(GameObject gameObject){
+        _gameObjects.remove(gameObject);
+        gameObject = null;
+    }
 
+    //==============================Создание-уровня=================================
 
     /**
      * Обнуляет текущий список правил и создает список правил по умолчанию
@@ -191,20 +236,14 @@ public class Level extends JPanel {
         _rules = new HashSet<>();
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         _rules.add(text_is_push);
-    }
 
-    /**
-     * Добавляет уровень в игровое окно
-     * @param window окно добавления
-     */
-    public void build(BabaIsYouWindow window){
-//        this._window = window;
-//        this._window.add(this);
-        window.add(this);
+
+        Rule baba_is_you = new Rule(new SubjectName("BABA"), new IS(), new YOU());
+        _rules.add(baba_is_you);
     }
 
 
-    //===========================РИСОВАНИЕ=============================
+    //=================================РИСОВАНИЕ===================================
 
     @Override
     public void paint(Graphics g){

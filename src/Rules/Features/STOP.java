@@ -1,14 +1,14 @@
 package Rules.Features;
 
-import GameObjects.*;
+import GameObjects.Direction;
+import GameObjects.Subject;
 import Rules.*;
 
-public class PUSH extends Feature {
+public class STOP extends Feature {
 
-    public PUSH(){
-        _word = "PUSH";
+    public STOP(){
+        _word = "STOP";
     }
-
     @Override
     public void action(Subject first, Subject second, Direction direction) {
 

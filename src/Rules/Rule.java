@@ -1,5 +1,7 @@
 package Rules;
 
+import Core.*;
+
 public class Rule {
     private Operand _leftPart;
     private Operator _operator;
@@ -7,5 +9,9 @@ public class Rule {
 
     public Rule(Operand left, Operator op, Operand right){
         _leftPart = left; _operator = op; _rightPart = right;
+    }
+
+    public void release(Level level){
+        _operator.action(level, _leftPart, _rightPart);
     }
 }

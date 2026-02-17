@@ -2,6 +2,8 @@ package Core;
 
 import GameObjects.*;
 import Rules.*;
+import Rules.Features.*;
+import Rules.Operators.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,51 +14,47 @@ import java.util.List;
 
 public class BabaIsYouWindow extends JFrame {
 
+
+    //============================Поля=================================
+
     private Level _level;
     private int _levelSuccess;
+    private KeyListener _keyListener;
+
+
+    //==========================Конструктор============================
 
     public BabaIsYouWindow(){
         createContent();
-        //loadLevel(generateLevel());
-        Subject sub = new Subject("BABA", new Position(1, 1));
-        Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
-        List<GameObject> gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(sub);
-        gameObjects.add(sub2);
-        gameObjects.add(textBlock);
-        loadLevel(new Level(gameObjects));
 
+        //BABA IS YOU
+        TextBlock babaName = new TextBlock(new SubjectName("BABA"), new Position(0, 0));
+        TextBlock is = new TextBlock(new IS(), new Position(1, 0));
+        TextBlock you = new TextBlock(new YOU(), new Position(2, 0));
+
+        Subject baba = new Subject("BABA", new Position(2, 2));
+
+        List<GameObject> gameObjects = new ArrayList<>();
+        gameObjects.add(babaName);
+        gameObjects.add(is);
+        gameObjects.add(you);
+        gameObjects.add(baba);
+
+        loadLevel(new Level(gameObjects));
         createKeyListener();
+
         buildWindow();
     }
+
+
+    //=======================Управление-окном===========================
 
     public void loadLevel(Level level){
         if(_level != null)
             remove(_level);
 
         _level = level;
-        _level.build(this);
-    }
-
-    public static Level generateLevel(){
-        Subject sub = new Subject("BABA", new Position(1, 1));
-        Subject sub2 = new Subject("BABAS", new Position(2, 1));
-        TextBlock textBlock = new TextBlock(new SubjectName("BABAS"), "BABAS", new Position(2, 2), Color.RED);
-        List<GameObject> gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(sub);
-        gameObjects.add(sub2);
-        gameObjects.add(textBlock);
-
-        return new Level(gameObjects);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new BabaIsYouWindow();
-            }
-        });
+        this.add(_level);
     }
 
     private void createContent(){
@@ -72,16 +70,19 @@ public class BabaIsYouWindow extends JFrame {
         setVisible(true);
     }
 
+
+    //===================Обработчик-событий-клавиатуры==================
+
     private void createKeyListener() {
-        KeyListener listener = new KeyListener() {
+        _keyListener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                handlingKey(e.getKeyChar());
+                handlingKey(e.getKeyCode());
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                handlingKey(e.getKeyChar());
+                handlingKey(e.getKeyCode());
             }
 
             @Override
@@ -89,9 +90,36 @@ public class BabaIsYouWindow extends JFrame {
 
             }
         };
+
+        this.addKeyListener(_keyListener);
     }
 
-    private void handlingKey(char key){
+    private void handlingKey(int key){
+        Direction direction = null;
 
+        switch (key){
+            case KeyEvent.VK_UP -> direction = Direction.UP;
+            case KeyEvent.VK_DOWN -> direction = Direction.DOWN;
+            case KeyEvent.VK_RIGHT -> direction = Direction.RIGHT;
+            case KeyEvent.VK_LEFT -> direction = Direction.LEFT;
+            case KeyEvent.VK_SPACE -> direction = Direction.STAY;
+        }
+
+        if(direction != null) {
+            _level.makeStep(direction);
+        }
+
+        System.out.println(direction);
+    }
+
+
+    //===============================MAIN================================
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new BabaIsYouWindow();
+            }
+        });
     }
 }

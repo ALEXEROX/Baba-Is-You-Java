@@ -1,39 +1,108 @@
 package GameObjects;
 
+import Core.*;
+import Rules.*;
+
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 public abstract class GameObject {
-    private GameObjectType _gameObjectType;
-    private String _type;
-    private Position _pos;
+
+
+    //=============================Поля================================
+
+    private final GameObjectType _gameObjectType;
+    private final String _name;
+    private Position _currentPosition;
+    private Position _nextPosition;
     protected BufferedImage _image;
+    protected HashSet<Feature> _features;
+    protected Level _level;
 
-    protected GameObject(GameObjectType gameObjectType, String type, Position pos) {
-        _gameObjectType = gameObjectType; _type = type; _pos = pos;
+
+    //==========================Конструктор============================
+
+    /**
+     * Игровой объект
+     * @param gameObjectType Тип объекта: SUBJECT или TEXT
+     * @param name Имя объекта (BABA, KEKE, ROCK, IS и т. д.)
+     * @param pos Позиция объекта
+     */
+    protected GameObject(GameObjectType gameObjectType, String name, Position pos) {
+        _gameObjectType = gameObjectType; _name = name; _currentPosition = pos; _features = new HashSet<>();
     }
 
-    public String getText(){
-        return _type;
-    }
+    //=========================Гетеры-сетеры===========================
 
-    public boolean isText(){
-        return _gameObjectType == GameObjectType.TEXT;
-    }
-
-    public boolean isSubject(){
-        return _gameObjectType == GameObjectType.SUBJECT;
+    /**
+     * @return Имя объекта или содержание текста
+     */
+    public String getName(){
+        return _name;
     }
 
     public Position getPosition(){
-        return _pos;
-    }
-
-    public void move(Direction direction){
-        _pos = _pos.getNeightboor(direction);
+        return _currentPosition;
     }
 
     public BufferedImage getImage(){
         return _image;
+    }
+
+    /**
+     * @return Является ли игровой объект TextBlock
+     */
+    public boolean isTextBlock(){
+        return _gameObjectType == GameObjectType.TEXT;
+    }
+
+    /**
+     * @return Является ли игровой объект Subject
+     */
+    public boolean isSubject(){
+        return _gameObjectType == GameObjectType.SUBJECT;
+    }
+
+    public HashSet<Feature> getFeatures() {
+        return _features;
+    }
+
+    public void clearFeatures(){
+        _features.clear();
+    }
+
+    public void addFeature(Feature feature){
+        _features.add(feature);
+    }
+
+    public boolean hasFeature(Feature feature){
+        return _features.contains(feature);
+    }
+
+
+    //==========================Действия==============================
+
+    public void move(){
+        if(_nextPosition != null) {
+            _currentPosition = _nextPosition;
+            _nextPosition = null;
+        }
+    }
+
+    public void prepareMove(Direction direction){
+        _nextPosition = _currentPosition.getNeightboor(direction);
+    }
+
+    public void cancelMove(){
+        _nextPosition = _currentPosition;
+    }
+
+    public void transform(GameObject newGameObject){
+        _level.transformGameObject(this, newGameObject.getName());
+    }
+
+    public void destroy(){
+        _level.destroyGameObject(this);
     }
 }
 
