@@ -10,7 +10,12 @@ public class PUSH extends Feature {
     }
 
     @Override
-    public void action(Subject first, Subject second, Direction direction) {
+    public void action(Subject subject, Direction direction) {
 
+    }
+
+    @Override
+    public void interaction(Subject first, Subject second, Direction direction) {
+        
     }
 }

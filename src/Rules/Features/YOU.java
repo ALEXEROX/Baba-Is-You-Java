@@ -10,7 +10,12 @@ public class YOU extends Feature {
     }
 
     @Override
-    public void action(Subject first, Subject second, Direction direction) {
-        first.prepareMove(direction);
+    public void action(Subject subject, Direction direction) {
+        subject.prepareMove(direction);
+    }
+
+    @Override
+    public void interaction(Subject first, Subject second, Direction direction) {
+
     }
 }

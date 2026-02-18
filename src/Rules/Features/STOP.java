@@ -9,8 +9,14 @@ public class STOP extends Feature {
     public STOP(){
         _word = "STOP";
     }
+
     @Override
-    public void action(Subject first, Subject second, Direction direction) {
+    public void action(Subject subject, Direction direction) {
+
+    }
+
+    @Override
+    public void interaction(Subject first, Subject second, Direction direction) {
 
     }
 }

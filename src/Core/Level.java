@@ -46,29 +46,6 @@ public class Level extends JPanel {
     }
 
 
-    //================================Гетеры-сетеры===================================
-
-    /**
-     * @param pos Позиция "ячейки"
-     * @return Список объектов, находящихся в "ячейке"
-     */
-    public List<GameObject> getCell(Position pos){
-        List<GameObject> gameObjects = new ArrayList<>();
-
-        for(GameObject gameObject : _gameObjects){
-            if(gameObject.getPosition() == pos){
-                gameObjects.add(gameObject);
-            }
-        }
-
-        return gameObjects;
-    }
-
-    public List<GameObject> getGameObjects(){
-        return _gameObjects;
-    }
-
-
     //============================Управление-уровнем================================
 
 
@@ -103,9 +80,14 @@ public class Level extends JPanel {
 
     private void releaseFeatures(Direction direction){
         for(GameObject gameObject : _gameObjects){
-            if(gameObject.getClass() == Subject.class) {
-                for (Feature feature : gameObject.getFeatures()) {
-                    feature.action((Subject) gameObject, null, direction);
+            List<GameObject> cellOnNextStep = getCellOnNextStep(gameObject.getNextPosition());
+            cellOnNextStep.remove(gameObject);
+
+            for(Feature feature : gameObject.getFeatures()){
+                feature.action((Subject) gameObject, direction);
+
+                for(GameObject gameObject1 : cellOnNextStep) {
+                    feature.interaction((Subject) gameObject, (Subject) gameObject1, direction);
                 }
             }
         }
@@ -240,6 +222,41 @@ public class Level extends JPanel {
 
         Rule baba_is_you = new Rule(new SubjectName("BABA"), new IS(), new YOU());
         _rules.add(baba_is_you);
+    }
+
+
+    //================================Гетеры-сетеры===================================
+
+    /**
+     * @param pos Позиция "ячейки"
+     * @return Список объектов, находящихся в "ячейке"
+     */
+    public List<GameObject> getCell(Position pos){
+        List<GameObject> gameObjects = new ArrayList<>();
+
+        for(GameObject gameObject : _gameObjects){
+            if(gameObject.getPosition() == pos){
+                gameObjects.add(gameObject);
+            }
+        }
+
+        return gameObjects;
+    }
+
+    public List<GameObject> getCellOnNextStep(Position pos){
+        List<GameObject> gameObjects = new ArrayList<>();
+
+        for(GameObject gameObject : _gameObjects){
+            if(gameObject.getNextPosition() == pos){
+                gameObjects.add(gameObject);
+            }
+        }
+
+        return gameObjects;
+    }
+
+    public List<GameObject> getGameObjects(){
+        return _gameObjects;
     }
 
 

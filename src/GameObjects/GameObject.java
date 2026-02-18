@@ -29,7 +29,7 @@ public abstract class GameObject {
      * @param pos Позиция объекта
      */
     protected GameObject(GameObjectType gameObjectType, String name, Position pos) {
-        _gameObjectType = gameObjectType; _name = name; _currentPosition = pos; _features = new HashSet<>();
+        _gameObjectType = gameObjectType; _name = name; _currentPosition = _nextPosition = pos; _features = new HashSet<>();
     }
 
     //=========================Гетеры-сетеры===========================
@@ -43,6 +43,10 @@ public abstract class GameObject {
 
     public Position getPosition(){
         return _currentPosition;
+    }
+
+    public Position getNextPosition(){
+        return _nextPosition;
     }
 
     public BufferedImage getImage(){
@@ -83,10 +87,7 @@ public abstract class GameObject {
     //==========================Действия==============================
 
     public void move(){
-        if(_nextPosition != null) {
-            _currentPosition = _nextPosition;
-            _nextPosition = null;
-        }
+        _currentPosition = _nextPosition;
     }
 
     public void prepareMove(Direction direction){
