@@ -99,17 +99,11 @@ public class Level extends JPanel {
     public void calculateRules(){
         makeDefaultRules();
 
-//        for(GameObject gameObject : _gameObjects){
-//            _rules.addAll(findRules(gameObject.getPosition()));
-//        }
+        for(GameObject gameObject : _gameObjects){
+            _rules.addAll(findRules(gameObject.getPosition()));
+        }
         
         sortRules();
-    }
-
-    /**
-     * Сортирует правила по порядку приоритета
-     */
-    private void sortRules() {
     }
 
 
@@ -129,6 +123,11 @@ public class Level extends JPanel {
         return rules;
     }
 
+    /**
+     * Сортирует правила по порядку приоритета
+     */
+    private void sortRules() {
+    }
 
     /**
      * Находит словосочетание из трех в ряд стоящих ячеек
