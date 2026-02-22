@@ -13,36 +13,25 @@ import java.util.List;
 public class Level extends JPanel {
 
     //========================Константы=============================
-
-    public static final int WIDTH = 16;
-    public static final int HEIGHT = 10;
     public static final int CELL_SIZE = 75;
     public static final Color BACKGOUND_COLOR = Color.BLACK;
 
 
     //==========================Поля================================
 
+    public final int _width;
+    public final int _height;
     private List<GameObject> _gameObjects;
     private HashSet<Rule> _rules;
 
 
     //====================================Конструкторы======================================
 
-    public Level(){
+    public Level(int width, int height){
+        _width = width; _height = height;
         _gameObjects = new ArrayList<>();
         createScreen();
         makeDefaultRules();
-    }
-
-    public Level(List<GameObject> gameObjects){
-        this();
-        _gameObjects = gameObjects;
-    }
-
-    private void createScreen() {
-        setBounds(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
-        setPreferredSize(new Dimension(WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE) );
-        setBackground(BACKGOUND_COLOR);
     }
 
 
@@ -61,12 +50,20 @@ public class Level extends JPanel {
         repaint();
     }
 
+    /**
+     * Двигает все игровые объекты на поле
+     */
     private void moveGameObjects() {
         for(GameObject gameObject: _gameObjects){
             gameObject.move();
         }
     }
 
+    /**
+     * Проверяет, сможет ли какой-био объект войти в тпроверяемую ячейку
+     * @param position проверяемая ячейка
+     * @param direction направление движения объектов на текущем шаге
+     */
     public boolean canLetTo(Position position, Direction direction){
         List<GameObject> gameObjects = getCell(position);
 
@@ -86,7 +83,7 @@ public class Level extends JPanel {
 
 
     /**
-     * Выполняет правила по очереди
+     * Выполняет правила
      */
     private void releaseRules() {
         for(Rule rule : _rules){
@@ -94,14 +91,22 @@ public class Level extends JPanel {
         }
     }
 
+    /**
+     * Выполняет все действия в соответствии с правилами
+     * @param direction навправление движения объектов
+     */
     private void releaseFeatures(Direction direction){
-        for(GameObject gameObject : _gameObjects){
-            for(Feature feature : gameObject.getFeatures()){
-                feature.action(gameObject, direction);
-            }
-        }
+        sortGameObjects(direction);
+        releaseActions(direction);
+        releaseInteractions(direction);
+    }
 
-        // Сортировка объектов в зависимости от направления движения
+    /**
+     * Сортирует объекты по направлению движения.
+     * Нужна, чтобы обработка выполнялась правильно.
+     * @param direction навправление движения объектов
+     */
+    private void sortGameObjects(Direction direction) {
         switch (direction) {
             case RIGHT:
                 _gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getX(), g2.getPosition().getX()));
@@ -116,13 +121,37 @@ public class Level extends JPanel {
                 _gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getY(), g1.getPosition().getY()));
                 break;
         }
+    }
 
+    /**
+     * Выполняет действия правил, взаимодействующих с одним объектом в клетке.
+     * Например YOU - двигает объект со свойством YOU
+     * @param direction навправление движения объектов
+     */
+    private void releaseActions(Direction direction) {
+        for(GameObject gameObject : _gameObjects){
+            for(Feature feature : gameObject.getFeatures()){
+                feature.action(gameObject, direction);
+            }
+        }
+    }
 
+    /**
+     * Выполняет действия правил, взаимодействующих с двумя объектами, находящимися в одной ячекйке.
+     * Например PUSH - пытается вытолкнуть объект, в который пытается двигаться другой объект
+     * @param direction навправление движения объектов
+     */
+    private void releaseInteractions(Direction direction) {
         for(GameObject gameObject : _gameObjects) {
             releaseInteractionsInCell(gameObject.getNextPosition(), direction);
         }
     }
 
+    /**
+     * Выполняет действия правил, взаимодействующих с двумя объектами в определенной ячейке.
+     * @param position проверяемая позиция, в которую предполагают оказаться объекты на следующем шаге
+     * @param direction навправление движения объектов
+     */
     public void releaseInteractionsInCell(Position position, Direction direction){
         List<GameObject> gameObjectsInCell = getCellOnNextStep(position);
 
@@ -154,7 +183,6 @@ public class Level extends JPanel {
         
         sortRules();
     }
-
 
     /**
      * Находит правила, корень которых находится в положении pos
@@ -225,17 +253,15 @@ public class Level extends JPanel {
         return 0;
     }
 
-    /**
-     * Превращает один объект в другой
-     * @param from Исходный объект
-     * @param to Тип объекта, в который надо превратить исходный.
-     *           При превращении Subject в TextBlock, он превращается в
-     *           SubjectName с именем исходного объекта.
-     */
-
 
     //===========================Управление-объектами===============================
 
+    /**
+     * Превращает один gameObject в другой
+     * @param from какой превращается
+     * @param to во что превращается (чтобы превратиться в текст
+     *           с названием исходного обхекта, можно ввести "TEXT")
+     */
     public void transformGameObject(GameObject from, String to){
         Position pos = from.getPosition();
         GameObject newGameObject;
@@ -252,6 +278,10 @@ public class Level extends JPanel {
         _gameObjects.add(newGameObject);
     }
 
+
+    /**
+     * Уничтожает объект с поля
+     */
     public void destroyGameObject(GameObject gameObject){
         _gameObjects.remove(gameObject);
         gameObject = null;
@@ -260,16 +290,25 @@ public class Level extends JPanel {
     //==============================Создание-уровня=================================
 
     /**
-     * Обнуляет текущий список правил и создает список правил по умолчанию
+     * Обнуляет текущий список правил и добавляет список правил по умолчанию
      */
     public void makeDefaultRules(){
         _rules = new HashSet<>();
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         _rules.add(text_is_push);
 
-
+        // После реализации чтения правил, удалить
         Rule baba_is_you = new Rule(new SubjectName("BABA"), new IS(), new YOU());
         _rules.add(baba_is_you);
+    }
+
+    /**
+     * Создает окно, закрашенное BACKGROUND_COLOR определенного размера
+     */
+    private void createScreen() {
+        setBounds(0, 0, _width *CELL_SIZE, _height *CELL_SIZE);
+        setPreferredSize(new Dimension(_width *CELL_SIZE, _height *CELL_SIZE) );
+        setBackground(BACKGOUND_COLOR);
     }
 
 
@@ -291,6 +330,9 @@ public class Level extends JPanel {
         return gameObjects;
     }
 
+    /**
+     * Возвращает все GameObject, которые собираются переместиться в выбранную ячейку
+     */
     public List<GameObject> getCellOnNextStep(Position pos){
         List<GameObject> gameObjects = new ArrayList<>();
 
@@ -303,10 +345,16 @@ public class Level extends JPanel {
         return gameObjects;
     }
 
+    /**
+     * @return все GameObject на уровне
+     */
     public List<GameObject> getGameObjects(){
         return _gameObjects;
     }
 
+    /**
+     * Добавить GameObject в уровень
+     */
     public void addGameObject(GameObject gameObject){
         _gameObjects.add(gameObject);
     }
@@ -327,7 +375,7 @@ public class Level extends JPanel {
 
     private void drawField(Graphics g){
         g.setColor(BACKGOUND_COLOR);
-        g.fillRect(0, 0, WIDTH*CELL_SIZE, HEIGHT*CELL_SIZE);
+        g.fillRect(0, 0, _width *CELL_SIZE, _height *CELL_SIZE);
     }
 
     private void drawSubject(GameObject gameObject, Graphics g) {
@@ -341,7 +389,7 @@ public class Level extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(WIDTH * CELL_SIZE,
-                HEIGHT * CELL_SIZE);
+        return new Dimension(_width * CELL_SIZE,
+                _height * CELL_SIZE);
     }
 }

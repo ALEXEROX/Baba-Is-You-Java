@@ -9,27 +9,26 @@ import java.awt.image.BufferedImage;
 public class TextBlock extends GameObject {
     private static final Color DEFAULT_COLOR = Color.WHITE;
 
-    private String _word;
     private RuleText _ruleText;
     private Color _color;
 
     public TextBlock(RuleText ruleText, Level level, Position pos){
         super(GameObjectType.TEXT, "TEXT", level, pos);
-        createText(ruleText, ruleText.getText(), DEFAULT_COLOR);
+        createText(ruleText, DEFAULT_COLOR);
     }
 
     public TextBlock(RuleText ruleText, Level level, Position pos, Color color){
         super(GameObjectType.TEXT, "TEXT", level, pos);
-        createText(ruleText, ruleText.getText(), color);
+        createText(ruleText, color);
     }
 
     public RuleText getRuleText(){
         return _ruleText;
     }
 
-    private void createText(RuleText ruleText, String word, Color color){
-        _ruleText = ruleText; _word = word; _color = color;
-        _image = createOptimalTextImage(word);
+    private void createText(RuleText ruleText, Color color){
+        _ruleText = ruleText; _color = color;
+        _image = createOptimalTextImage(_ruleText.getText());
     }
 
     private BufferedImage createOptimalTextImage(String text) {

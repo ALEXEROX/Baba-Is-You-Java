@@ -26,14 +26,14 @@ public class BabaIsYouWindow extends JFrame {
     public BabaIsYouWindow(){
         createContent();
 
-        _level = new Level();
+        _level = new Level(16, 10);
 
         //BABA IS YOU
-        TextBlock babaName = new TextBlock(new SubjectName("BABA"), _level, new Position(0, 0));
-        TextBlock is = new TextBlock(new IS(), _level, new Position(1, 0));
-        TextBlock you = new TextBlock(new YOU(), _level, new Position(2, 0));
+        TextBlock babaName = new TextBlock(new SubjectName("BABA"), _level, new Position(4, 4));
+        TextBlock is = new TextBlock(new IS(), _level, new Position(5, 4));
+        TextBlock you = new TextBlock(new YOU(), _level, new Position(6, 4));
 
-        Subject baba = new Subject("BABA", _level, new Position(2, 1));
+        Subject baba = new Subject("BABA", _level, new Position(6, 5));
 
         loadLevel(_level);
         createKeyListener();
@@ -44,6 +44,10 @@ public class BabaIsYouWindow extends JFrame {
 
     //=======================Управление-окном===========================
 
+    /**
+     * Загружает уровен для его отображения в окне
+     * @param level
+     */
     public void loadLevel(Level level){
         if(_level != null)
             remove(_level);

@@ -27,7 +27,8 @@ public abstract class GameObject {
     /**
      * Игровой объект
      * @param gameObjectType Тип объекта: SUBJECT или TEXT
-     * @param name Имя объекта (BABA, KEKE, ROCK, IS и т. д.)
+     * @param name Имя объекта (BABA, KEKE, ROCK, IS и т.д.)
+     * @param level Уровень, на который загружается объект
      * @param pos Позиция объекта
      */
     protected GameObject(GameObjectType gameObjectType, String name, Level level, Position pos) {
@@ -40,28 +41,36 @@ public abstract class GameObject {
     //=========================Гетеры-сетеры===========================
 
     /**
-     * @return Имя объекта или содержание текста
+     * @return Имя объекта ("TEXT" для текста)
      */
     public String getName(){
         return _name;
     }
 
+    /**
+     * @return Позиция объекта
+     */
     public Position getPosition(){
         return _currentPosition;
     }
 
+    /**
+     * @return Позиция, в которую объект собирается прийти
+     */
     public Position getNextPosition(){
         return _nextPosition;
     }
 
+    /**
+     * @return Текстура
+     */
     public BufferedImage getImage(){
         return _image;
     }
 
-    public List<GameObject> getNeightboorCell(Direction direction){
-        return _level.getCell(getPosition().getNeightboor(direction));
-    }
-
+    /**
+     * Может ли объект пустить в свою клетку другой объект
+     */
     public boolean canLet(Direction direction){
         if(hasFeature(new STOP())){
             return false;
@@ -84,18 +93,30 @@ public abstract class GameObject {
         return _gameObjectType == GameObjectType.SUBJECT;
     }
 
+    /**
+     * @return Все Feature объекта
+     */
     public HashSet<Feature> getFeatures() {
         return _features;
     }
 
+    /**
+     * Очистить список Feature
+     */
     public void clearFeatures(){
         _features.clear();
     }
 
+    /**
+     * Добавить Feature объекту
+     */
     public void addFeature(Feature feature){
         _features.add(feature);
     }
 
+    /**
+     * Имеет ли объект выбранную Feature
+     */
     public boolean hasFeature(Feature feature){
         return _features.contains(feature);
     }
@@ -103,22 +124,39 @@ public abstract class GameObject {
 
     //==========================Действия==============================
 
+    /**
+     * Осуществить заготовленное передвижение
+     */
     public void move(){
         _currentPosition = _nextPosition;
     }
 
+    /**
+     * Заготовить перемещение
+     * @param direction Направление движения
+     */
     public void prepareMove(Direction direction){
         _nextPosition = _currentPosition.getNeightboor(direction);
     }
 
+    /**
+     * Отменить заготовленное перемещение
+     */
     public void cancelMove(){
         _nextPosition = _currentPosition;
     }
 
+    /**
+     * Превращение в другой объект
+     * @param name Имя нового объекта ("TEXT" для превращения в текст)
+     */
     public void transform(String name){
         _level.transformGameObject(this, name);
     }
 
+    /**
+     * Уничтожить объект
+     */
     public void destroy(){
         _level.destroyGameObject(this);
     }
@@ -126,5 +164,5 @@ public abstract class GameObject {
 
 enum GameObjectType{
     SUBJECT,
-    TEXT;
+    TEXT
 }
