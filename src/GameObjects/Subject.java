@@ -1,5 +1,7 @@
 package GameObjects;
 
+import Core.*;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,8 +10,8 @@ import java.io.IOException;
 
 public class Subject extends GameObject {
 
-    public Subject(String type, Position pos){
-        super(GameObjectType.SUBJECT, type, pos);
+    public Subject(String type, Level level, Position pos){
+        super(GameObjectType.SUBJECT, type, level, pos);
 
         File file = new File("images/" + type + ".png");
         try{

@@ -1,5 +1,6 @@
 package GameObjects;
 
+import Core.Level;
 import Rules.*;
 
 import java.awt.*;
@@ -12,25 +13,21 @@ public class TextBlock extends GameObject {
     private RuleText _ruleText;
     private Color _color;
 
-    public TextBlock(RuleText ruleText, Position pos){
-        super(GameObjectType.TEXT, ruleText.getText(), pos);
-        createText(ruleText, ruleText.getText(), pos, DEFAULT_COLOR);
+    public TextBlock(RuleText ruleText, Level level, Position pos){
+        super(GameObjectType.TEXT, "TEXT", level, pos);
+        createText(ruleText, ruleText.getText(), DEFAULT_COLOR);
     }
 
-    public TextBlock(RuleText ruleText, Position pos, Color color){
-        super(GameObjectType.TEXT, ruleText.getText(), pos);
-        createText(ruleText, ruleText.getText(), pos, color);
-    }
-
-    public String getName(){
-        return _word;
+    public TextBlock(RuleText ruleText, Level level, Position pos, Color color){
+        super(GameObjectType.TEXT, "TEXT", level, pos);
+        createText(ruleText, ruleText.getText(), color);
     }
 
     public RuleText getRuleText(){
         return _ruleText;
     }
 
-    private void createText(RuleText ruleText, String word, Position pos, Color color){
+    private void createText(RuleText ruleText, String word, Color color){
         _ruleText = ruleText; _word = word; _color = color;
         _image = createOptimalTextImage(word);
     }

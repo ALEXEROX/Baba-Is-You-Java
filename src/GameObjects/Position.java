@@ -23,5 +23,9 @@ public class Position {
     public Position getNeightboor(Direction dir){
         return new Position(_x + dir.getX(), _y + dir.getY());
     }
+
+    public boolean equal(Position pos){
+        return _x == pos.getX() && _y == pos.getY();
+    }
 }
 

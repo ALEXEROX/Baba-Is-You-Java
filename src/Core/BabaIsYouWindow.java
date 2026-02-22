@@ -7,8 +7,7 @@ import Rules.Operators.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +26,16 @@ public class BabaIsYouWindow extends JFrame {
     public BabaIsYouWindow(){
         createContent();
 
+        _level = new Level();
+
         //BABA IS YOU
-        TextBlock babaName = new TextBlock(new SubjectName("BABA"), new Position(0, 0));
-        TextBlock is = new TextBlock(new IS(), new Position(1, 0));
-        TextBlock you = new TextBlock(new YOU(), new Position(2, 0));
+        TextBlock babaName = new TextBlock(new SubjectName("BABA"), _level, new Position(0, 0));
+        TextBlock is = new TextBlock(new IS(), _level, new Position(1, 0));
+        TextBlock you = new TextBlock(new YOU(), _level, new Position(2, 0));
 
-        Subject baba = new Subject("BABA", new Position(2, 2));
+        Subject baba = new Subject("BABA", _level, new Position(2, 1));
 
-        List<GameObject> gameObjects = new ArrayList<>();
-        gameObjects.add(babaName);
-        gameObjects.add(is);
-        gameObjects.add(you);
-        gameObjects.add(baba);
-
-        loadLevel(new Level(gameObjects));
+        loadLevel(_level);
         createKeyListener();
 
         buildWindow();

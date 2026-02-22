@@ -3,6 +3,8 @@ package Rules.Features;
 import GameObjects.*;
 import Rules.*;
 
+import java.util.List;
+
 public class PUSH extends Feature {
 
     public PUSH(){
@@ -10,12 +12,17 @@ public class PUSH extends Feature {
     }
 
     @Override
-    public void action(Subject subject, Direction direction) {
+    public void action(GameObject subject, Direction direction) {
 
     }
 
     @Override
-    public void interaction(Subject first, Subject second, Direction direction) {
-        
+    public void interaction(GameObject first, GameObject second, Direction direction) {
+        if(!first.canLet(direction)){
+            second.cancelMove();
+        }
+        else{
+            first.prepareMove(direction);
+        }
     }
 }

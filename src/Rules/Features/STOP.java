@@ -1,6 +1,7 @@
 package Rules.Features;
 
 import GameObjects.Direction;
+import GameObjects.GameObject;
 import GameObjects.Subject;
 import Rules.*;
 
@@ -11,12 +12,12 @@ public class STOP extends Feature {
     }
 
     @Override
-    public void action(Subject subject, Direction direction) {
+    public void action(GameObject subject, Direction direction) {
 
     }
 
     @Override
-    public void interaction(Subject first, Subject second, Direction direction) {
+    public void interaction(GameObject first, GameObject second, Direction direction) {
 
     }
 }

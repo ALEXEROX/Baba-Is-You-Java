@@ -2,9 +2,11 @@ package GameObjects;
 
 import Core.*;
 import Rules.*;
+import Rules.Features.*;
 
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class GameObject {
 
@@ -12,7 +14,7 @@ public abstract class GameObject {
     //=============================Поля================================
 
     private final GameObjectType _gameObjectType;
-    private final String _name;
+    protected final String _name;
     private Position _currentPosition;
     private Position _nextPosition;
     protected BufferedImage _image;
@@ -28,8 +30,11 @@ public abstract class GameObject {
      * @param name Имя объекта (BABA, KEKE, ROCK, IS и т. д.)
      * @param pos Позиция объекта
      */
-    protected GameObject(GameObjectType gameObjectType, String name, Position pos) {
-        _gameObjectType = gameObjectType; _name = name; _currentPosition = _nextPosition = pos; _features = new HashSet<>();
+    protected GameObject(GameObjectType gameObjectType, String name, Level level, Position pos) {
+        _gameObjectType = gameObjectType; _name = name; _level = level;
+        _currentPosition = _nextPosition = pos; _features = new HashSet<>();
+
+        _level.addGameObject(this);
     }
 
     //=========================Гетеры-сетеры===========================
@@ -51,6 +56,18 @@ public abstract class GameObject {
 
     public BufferedImage getImage(){
         return _image;
+    }
+
+    public List<GameObject> getNeightboorCell(Direction direction){
+        return _level.getCell(getPosition().getNeightboor(direction));
+    }
+
+    public boolean canLet(Direction direction){
+        if(hasFeature(new STOP())){
+            return false;
+        }
+
+        return _level.canLetTo(_currentPosition.getNeightboor(direction), direction);
     }
 
     /**
@@ -98,8 +115,8 @@ public abstract class GameObject {
         _nextPosition = _currentPosition;
     }
 
-    public void transform(GameObject newGameObject){
-        _level.transformGameObject(this, newGameObject.getName());
+    public void transform(String name){
+        _level.transformGameObject(this, name);
     }
 
     public void destroy(){

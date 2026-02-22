@@ -22,10 +22,9 @@ public class IS extends Operator {
         List<GameObject> gameObjects = level.getGameObjects();
 
         for(GameObject gameObject: gameObjects) {
-            if(gameObject.getClass()==Subject.class &&
-                    gameObject.getName().equals(left.getText())) {
+            if(gameObject.getName().equals(left.getText())) {
                 if (right.getClass() == SubjectName.class) {
-                    gameObject.transform(new Subject(right.getText(), gameObject.getPosition()));
+                    gameObject.transform(right.getText());
                 } else {
                     gameObject.addFeature((Feature) right);
                 }

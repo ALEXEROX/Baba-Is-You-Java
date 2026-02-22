@@ -48,7 +48,6 @@ public class Level extends JPanel {
 
     //============================Управление-уровнем================================
 
-
     /**
      * Вызывается по каждому действию игрока
      * @param dir направление движения игрока
@@ -68,6 +67,23 @@ public class Level extends JPanel {
         }
     }
 
+    public boolean canLetTo(Position position, Direction direction){
+        List<GameObject> gameObjects = getCell(position);
+
+        for(GameObject gameObject : gameObjects){
+            if(gameObject.hasFeature(new STOP())) {
+                return false;
+            }
+            if(gameObject.hasFeature(new PUSH())){
+                if(!canLetTo(gameObject.getPosition().getNeightboor(direction), direction)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * Выполняет правила по очереди
@@ -80,14 +96,28 @@ public class Level extends JPanel {
 
     private void releaseFeatures(Direction direction){
         for(GameObject gameObject : _gameObjects){
-            List<GameObject> cellOnNextStep = getCellOnNextStep(gameObject.getNextPosition());
-            cellOnNextStep.remove(gameObject);
-
             for(Feature feature : gameObject.getFeatures()){
-                feature.action((Subject) gameObject, direction);
+                feature.action(gameObject, direction);
+            }
+        }
 
-                for(GameObject gameObject1 : cellOnNextStep) {
-                    feature.interaction((Subject) gameObject, (Subject) gameObject1, direction);
+        for(int x = 0; x < WIDTH; x++){
+            for(int y = 0; y < HEIGHT; y++){
+                releaseInteractionsInCell(new Position(x, y), direction);
+            }
+        }
+    }
+
+    private void releaseInteractionsInCell(Position position, Direction direction){
+        List<GameObject> gameObjectsInCell = getCellOnNextStep(position);
+
+        for(GameObject gameObject : gameObjectsInCell){
+            List<GameObject> otherGameObjects = new ArrayList<>(List.copyOf(gameObjectsInCell));
+            otherGameObjects.remove(gameObject);
+
+            for(Feature feature : gameObject.getFeatures()) {
+                for (GameObject otherGameobject : otherGameObjects) {
+                    feature.interaction(gameObject, otherGameobject, direction);
                 }
             }
         }
@@ -101,6 +131,10 @@ public class Level extends JPanel {
 
         for(GameObject gameObject : _gameObjects){
             _rules.addAll(findRules(gameObject.getPosition()));
+        }
+
+        for(GameObject gameObject : _gameObjects){
+            gameObject.clearFeatures();
         }
         
         sortRules();
@@ -192,11 +226,11 @@ public class Level extends JPanel {
         GameObject newGameObject;
 
         if(!Objects.equals(to, "TEXT")){
-            newGameObject = new Subject(to, pos);
+            newGameObject = new Subject(to,this, pos);
         }
         else{
             SubjectName subjectName = new SubjectName(from.getName());
-            newGameObject = new TextBlock(subjectName, pos);
+            newGameObject = new TextBlock(subjectName, this, pos);
         }
 
         _gameObjects.remove(from);
@@ -246,7 +280,7 @@ public class Level extends JPanel {
         List<GameObject> gameObjects = new ArrayList<>();
 
         for(GameObject gameObject : _gameObjects){
-            if(gameObject.getNextPosition() == pos){
+            if(gameObject.getNextPosition().equal(pos)){
                 gameObjects.add(gameObject);
             }
         }
@@ -256,6 +290,10 @@ public class Level extends JPanel {
 
     public List<GameObject> getGameObjects(){
         return _gameObjects;
+    }
+
+    public void addGameObject(GameObject gameObject){
+        _gameObjects.add(gameObject);
     }
 
 
