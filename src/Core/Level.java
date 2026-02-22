@@ -73,7 +73,7 @@ public class Level extends JPanel {
                 return false;
             }
             if(gameObject.hasFeature(new PUSH())){
-                if(!canLetTo(gameObject.getPosition().getNeightboor(direction), direction)){
+                if(!canLetTo(gameObject.getNextPosition().getNeightboor(direction), direction)){
                     return false;
                 }
             }
