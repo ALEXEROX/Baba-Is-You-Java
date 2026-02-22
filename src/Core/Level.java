@@ -13,6 +13,7 @@ import java.util.List;
 public class Level extends JPanel {
 
     //========================Константы=============================
+
     public static final int CELL_SIZE = 75;
     public static final Color BACKGOUND_COLOR = Color.BLACK;
 
@@ -65,7 +66,7 @@ public class Level extends JPanel {
      * @param direction направление движения объектов на текущем шаге
      */
     public boolean canLetTo(Position position, Direction direction){
-        List<GameObject> gameObjects = getCell(position);
+        List<GameObject> gameObjects = getCellOnNextStep(position);
 
         for(GameObject gameObject : gameObjects){
             if(gameObject.hasFeature(new STOP())) {
@@ -300,6 +301,8 @@ public class Level extends JPanel {
         // После реализации чтения правил, удалить
         Rule baba_is_you = new Rule(new SubjectName("BABA"), new IS(), new YOU());
         _rules.add(baba_is_you);
+        Rule wall_is_stop = new Rule(new SubjectName("WALL"), new IS(), new STOP());
+        _rules.add(wall_is_stop);
     }
 
     /**

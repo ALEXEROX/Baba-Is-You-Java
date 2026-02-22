@@ -34,6 +34,7 @@ public class BabaIsYouWindow extends JFrame {
         TextBlock you = new TextBlock(new YOU(), _level, new Position(6, 4));
 
         Subject baba = new Subject("BABA", _level, new Position(6, 5));
+        Subject wall = new Subject("WALL", _level, new Position(7, 4));
 
         loadLevel(_level);
         createKeyListener();

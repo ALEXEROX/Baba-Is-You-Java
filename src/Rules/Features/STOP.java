@@ -16,6 +16,6 @@ public class STOP extends Feature {
 
     @Override
     public void interaction(GameObject first, GameObject second, Direction direction) {
-
+        second.cancelMove();
     }
 }

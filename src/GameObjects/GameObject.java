@@ -7,6 +7,7 @@ import Rules.Features.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class GameObject {
 
@@ -118,7 +119,12 @@ public abstract class GameObject {
      * Имеет ли объект выбранную Feature
      */
     public boolean hasFeature(Feature feature){
-        return _features.contains(feature);
+        for(Feature feature1 : _features){
+            if(Objects.equals(feature.getText(), feature1.getText())){
+                return true;
+            }
+        }
+        return false;
     }
 
 
