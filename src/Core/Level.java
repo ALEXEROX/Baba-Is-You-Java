@@ -101,14 +101,29 @@ public class Level extends JPanel {
             }
         }
 
-        for(int x = 0; x < WIDTH; x++){
-            for(int y = 0; y < HEIGHT; y++){
-                releaseInteractionsInCell(new Position(x, y), direction);
-            }
+        // Сортировка объектов в зависимости от направления движения
+        switch (direction) {
+            case RIGHT:
+                _gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getX(), g2.getPosition().getX()));
+                break;
+            case LEFT:
+                _gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getX(), g1.getPosition().getX()));
+                break;
+            case DOWN:
+                _gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getY(), g2.getPosition().getY()));
+                break;
+            case UP:
+                _gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getY(), g1.getPosition().getY()));
+                break;
+        }
+
+
+        for(GameObject gameObject : _gameObjects) {
+            releaseInteractionsInCell(gameObject.getNextPosition(), direction);
         }
     }
 
-    private void releaseInteractionsInCell(Position position, Direction direction){
+    public void releaseInteractionsInCell(Position position, Direction direction){
         List<GameObject> gameObjectsInCell = getCellOnNextStep(position);
 
         for(GameObject gameObject : gameObjectsInCell){

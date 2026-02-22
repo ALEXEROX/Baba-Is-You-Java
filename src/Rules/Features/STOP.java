@@ -1,8 +1,6 @@
 package Rules.Features;
 
-import GameObjects.Direction;
-import GameObjects.GameObject;
-import GameObjects.Subject;
+import GameObjects.*;
 import Rules.*;
 
 public class STOP extends Feature {

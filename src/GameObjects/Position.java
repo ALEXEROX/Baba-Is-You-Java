@@ -28,4 +28,3 @@ public class Position {
         return _x == pos.getX() && _y == pos.getY();
     }
 }
-

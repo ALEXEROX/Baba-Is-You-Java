@@ -81,4 +81,3 @@ public class TextBlock extends GameObject {
         return optimalSize;
     }
 }
-
