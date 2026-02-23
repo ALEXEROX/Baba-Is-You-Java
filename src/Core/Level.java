@@ -40,10 +40,10 @@ public class Level extends JPanel {
 
     /**
      * Вызывается по каждому действию игрока
-     * @param dir направление движения игрока
+     * @param direction направление движения игрока
      */
-    public void makeStep(Direction dir){
-        releaseFeatures(dir);
+    public void makeStep(Direction direction){
+        releaseFeatures(direction);
         moveGameObjects();
 
         calculateRules();
@@ -83,7 +83,6 @@ public class Level extends JPanel {
 
         return true;
     }
-
 
     /**
      * Выполняет правила
@@ -341,8 +340,10 @@ public class Level extends JPanel {
             newGameObject = new TextBlock(subjectName, this, pos);
         }
 
-        _gameObjects.remove(from);
-        _gameObjects.add(newGameObject);
+        from.destroy();
+        
+        calculateRules();
+        releaseRules();
     }
 
 
