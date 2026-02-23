@@ -32,6 +32,7 @@ public class Level extends JPanel {
         _width = width; _height = height;
         _gameObjects = new ArrayList<>();
         createScreen();
+        makeDefaultRules();
     }
 
 
@@ -42,9 +43,9 @@ public class Level extends JPanel {
      * @param dir направление движения игрока
      */
     public void makeStep(Direction dir){
-        calculateRules();
         releaseRules();
         releaseFeatures(dir);
+        calculateRules();
 
         moveGameObjects();
         checkSuccess();
@@ -182,7 +183,7 @@ public class Level extends JPanel {
         }
 
         for(GameObject gameObject : _gameObjects){
-            _rules.addAll(findRules(gameObject.getPosition()));
+            _rules.addAll(findRules(gameObject.getNextPosition()));
         }
         
         sortRules();
@@ -215,7 +216,7 @@ public class Level extends JPanel {
         Position currentPosition = position;
         
         for(int i = 0; i < 3; i++) {
-            List<GameObject> cell = getCell(currentPosition);
+            List<GameObject> cell = getCellOnNextStep(currentPosition);
             for(GameObject gameObject : cell){
                 if(gameObject instanceof TextBlock textBlock){
                     textBlock.activate();
@@ -254,7 +255,7 @@ public class Level extends JPanel {
 
         for(int i = 0; i < 3; i++) {
             ruleText = null;
-            cell = getCell(currentPos);
+            cell = getCellOnNextStep(currentPos);
 
             for (GameObject gameObject : cell) {
                 if (gameObject.isTextBlock()){
