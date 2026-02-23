@@ -7,27 +7,23 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class TextBlock extends GameObject {
-    private static final Color DEFAULT_COLOR = Color.WHITE;
+    private static final Color INACTIVE_COLOR = Color.GRAY;
+    private static final Color ACTIVE_COLOR = Color.WHITE;
 
     private RuleText _ruleText;
     private Color _color;
 
     public TextBlock(RuleText ruleText, Level level, Position pos){
         super(GameObjectType.TEXT, "TEXT", level, pos);
-        createText(ruleText, DEFAULT_COLOR);
-    }
-
-    public TextBlock(RuleText ruleText, Level level, Position pos, Color color){
-        super(GameObjectType.TEXT, "TEXT", level, pos);
-        createText(ruleText, color);
+        createText(ruleText);
     }
 
     public RuleText getRuleText(){
         return _ruleText;
     }
 
-    private void createText(RuleText ruleText, Color color){
-        _ruleText = ruleText; _color = color;
+    private void createText(RuleText ruleText){
+        _ruleText = ruleText; _color = INACTIVE_COLOR;
         _image = createOptimalTextImage(_ruleText.getText());
     }
 
@@ -63,7 +59,7 @@ public class TextBlock extends GameObject {
 
         while (minSize <= maxSize) {
             int midSize = (minSize + maxSize) / 2;
-            Font font = new Font("Arial", Font.BOLD, midSize);
+            Font font = new Font("Montserrat", Font.BOLD, midSize);
             FontMetrics fm = g2d.getFontMetrics(font);
 
             int textWidth = fm.stringWidth(text);
@@ -78,5 +74,15 @@ public class TextBlock extends GameObject {
         }
 
         return optimalSize;
+    }
+
+    public void activate(){
+        _color = ACTIVE_COLOR;
+        _image = createOptimalTextImage(_ruleText.getText());
+    }
+
+    public void deactivate(){
+        _color = INACTIVE_COLOR;
+        _image = createOptimalTextImage(_ruleText.getText());
     }
 }

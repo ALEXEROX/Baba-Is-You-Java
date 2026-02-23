@@ -176,6 +176,9 @@ public class Level extends JPanel {
 
         for(GameObject gameObject : _gameObjects){
             gameObject.clearFeatures();
+            if(gameObject instanceof TextBlock textBlock){
+                textBlock.deactivate();
+            }
         }
 
         for(GameObject gameObject : _gameObjects){
@@ -198,12 +201,28 @@ public class Level extends JPanel {
 
         if(isRule(leftToRightPhrase)){
             rules.add(ruleFromPhrase(leftToRightPhrase));
+            highlightRule(pos, Direction.RIGHT);
         }
         if(isRule(topToBottomPhrase)){
             rules.add(ruleFromPhrase(topToBottomPhrase));
+            highlightRule(pos, Direction.DOWN);
         }
 
         return rules;
+    }
+
+    private void highlightRule(Position position, Direction direction) {
+        Position currentPosition = position;
+        
+        for(int i = 0; i < 3; i++) {
+            List<GameObject> cell = getCell(currentPosition);
+            for(GameObject gameObject : cell){
+                if(gameObject instanceof TextBlock textBlock){
+                    textBlock.activate();
+                }
+            }
+            currentPosition = currentPosition.getNeightboor(direction);
+        }
     }
 
     private Rule ruleFromPhrase(List<RuleText> phrase){
