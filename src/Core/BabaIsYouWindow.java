@@ -34,9 +34,9 @@ public class BabaIsYouWindow extends JFrame {
         TextBlock you = new TextBlock(new YOU(), _level, new Position(6, 4));
 
         //WALL IS STOP
-        TextBlock wallName = new TextBlock(new SubjectName("WALL"), _level, new Position(0, 0));
-        TextBlock is2 = new TextBlock(new IS(), _level, new Position(1, 0));
-        TextBlock stop = new TextBlock(new STOP(), _level, new Position(2, 0));
+        TextBlock wallName = new TextBlock(new SubjectName("WALL"), _level, new Position(1, 3));
+        TextBlock is2 = new TextBlock(new IS(), _level, new Position(2, 3));
+        TextBlock stop = new TextBlock(new STOP(), _level, new Position(3, 3));
 
         Subject baba = new Subject("BABA", _level, new Position(6, 5));
         Subject wall = new Subject("WALL", _level, new Position(7, 4));
@@ -121,8 +121,6 @@ public class BabaIsYouWindow extends JFrame {
                 lose();
             }
         }
-
-        System.out.println(direction);
     }
 
     private void lose() {

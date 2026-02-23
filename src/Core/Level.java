@@ -44,10 +44,11 @@ public class Level extends JPanel {
      */
     public void makeStep(Direction dir){
         releaseFeatures(dir);
+        moveGameObjects();
+
         calculateRules();
         releaseRules();
 
-        moveGameObjects();
         checkSuccess();
         repaint();
     }
