@@ -185,8 +185,6 @@ public class Level extends JPanel {
         for(GameObject gameObject : _gameObjects){
             _rules.addAll(findRules(gameObject.getNextPosition()));
         }
-        
-        sortRules();
     }
 
     /**
@@ -232,12 +230,6 @@ public class Level extends JPanel {
         Operand thirdWord = (Operand) phrase.get(2);
 
         return new Rule(firstWord, secondWord, thirdWord);
-    }
-
-    /**
-     * Сортирует правила по порядку приоритета
-     */
-    private void sortRules() {
     }
 
     /**
