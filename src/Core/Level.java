@@ -48,6 +48,7 @@ public class Level extends JPanel {
         releaseFeatures(dir);
 
         moveGameObjects();
+        checkSuccess();
         repaint();
     }
 
@@ -249,7 +250,33 @@ public class Level extends JPanel {
      * @return  1 - победа, 0 - продолжение, -1 - поражение
      */
     public int checkSuccess(){
+        // Проверить наличие объектов YOU
+        int youGameObjects = 0;
+        for(GameObject gameObject : _gameObjects){
+            if(gameObject.hasFeature(new YOU())){
+                youGameObjects++;
+            }
+        }
+        if(youGameObjects == 0){
+            return -1;
+        }
 
+        //Проверка победы (YOU и WIN в одной ячейке)
+        for(GameObject gameObject : _gameObjects){
+            List<GameObject> cell = getCell(gameObject.getPosition());
+            boolean hasYOU = false, hasWIN = false;
+            for(GameObject objectInCell : cell){
+                if(objectInCell.hasFeature(new YOU())){
+                    hasYOU = true;
+                }
+                if(objectInCell.hasFeature(new WIN())){
+                    hasWIN = true;
+                }
+            }
+            if(hasYOU && hasWIN){
+                return 1;
+            }
+        }
 
         return 0;
     }
