@@ -15,4 +15,9 @@ public abstract class Feature extends Operand{
      * @param second Объкт, который собирается войти в ячейку с исходным объектом
      */
     public abstract  void interaction(GameObject first, GameObject second, Direction direction);
+
+    @Override
+    public boolean isFeature(){
+        return true;
+    }
 }

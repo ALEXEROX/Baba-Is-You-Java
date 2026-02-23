@@ -33,6 +33,11 @@ public class BabaIsYouWindow extends JFrame {
         TextBlock is = new TextBlock(new IS(), _level, new Position(5, 4));
         TextBlock you = new TextBlock(new YOU(), _level, new Position(6, 4));
 
+        //WALL IS STOP
+        TextBlock wallName = new TextBlock(new SubjectName("WALL"), _level, new Position(0, 0));
+        TextBlock is2 = new TextBlock(new IS(), _level, new Position(1, 0));
+        TextBlock stop = new TextBlock(new STOP(), _level, new Position(2, 0));
+
         Subject baba = new Subject("BABA", _level, new Position(6, 5));
         Subject wall = new Subject("WALL", _level, new Position(7, 4));
 
@@ -47,7 +52,6 @@ public class BabaIsYouWindow extends JFrame {
 
     /**
      * Загружает уровен для его отображения в окне
-     * @param level
      */
     public void loadLevel(Level level){
         if(_level != null)
@@ -55,6 +59,7 @@ public class BabaIsYouWindow extends JFrame {
 
         _level = level;
         this.add(_level);
+        _level.makeStep(Direction.STAY);
     }
 
     private void createContent(){
@@ -107,9 +112,24 @@ public class BabaIsYouWindow extends JFrame {
 
         if(direction != null) {
             _level.makeStep(direction);
+            _levelSuccess = _level.checkSuccess();
+            
+            if(_levelSuccess == 1){
+                win();
+            }
+            if(_levelSuccess == -1){
+                lose();
+            }
         }
 
         System.out.println(direction);
+    }
+
+    private void lose() {
+
+    }
+
+    private void win() {
     }
 
 

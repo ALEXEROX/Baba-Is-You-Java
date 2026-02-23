@@ -14,7 +14,7 @@ public class IS extends Operator {
 
     @Override
     public boolean canInteract(Operand left, Operand right) {
-        return left.getClass() == SubjectName.class;
+        return left.isSubjectName();
     }
 
     @Override

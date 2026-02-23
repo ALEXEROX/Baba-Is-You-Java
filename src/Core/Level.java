@@ -32,7 +32,6 @@ public class Level extends JPanel {
         _width = width; _height = height;
         _gameObjects = new ArrayList<>();
         createScreen();
-        makeDefaultRules();
     }
 
 
@@ -176,11 +175,11 @@ public class Level extends JPanel {
         makeDefaultRules();
 
         for(GameObject gameObject : _gameObjects){
-            _rules.addAll(findRules(gameObject.getPosition()));
+            gameObject.clearFeatures();
         }
 
         for(GameObject gameObject : _gameObjects){
-            gameObject.clearFeatures();
+            _rules.addAll(findRules(gameObject.getPosition()));
         }
         
         sortRules();
@@ -194,12 +193,25 @@ public class Level extends JPanel {
     public HashSet<Rule> findRules(Position pos){
         HashSet<Rule> rules = new HashSet<>();
 
-        List<RuleText> rightToLeftPhrase = findPhrase(pos, Direction.RIGHT);
-        List<RuleText> topToDownPhrase = findPhrase(pos, Direction.DOWN);
+        List<RuleText> leftToRightPhrase = findPhrase(pos, Direction.RIGHT);
+        List<RuleText> topToBottomPhrase = findPhrase(pos, Direction.DOWN);
 
-        // TODO
+        if(isRule(leftToRightPhrase)){
+            rules.add(ruleFromPhrase(leftToRightPhrase));
+        }
+        if(isRule(topToBottomPhrase)){
+            rules.add(ruleFromPhrase(topToBottomPhrase));
+        }
 
         return rules;
+    }
+
+    private Rule ruleFromPhrase(List<RuleText> phrase){
+        Operand firstWord = (Operand) phrase.getFirst();
+        Operator secondWord = (Operator) phrase.get(1);
+        Operand thirdWord = (Operand) phrase.get(2);
+
+        return new Rule(firstWord, secondWord, thirdWord);
     }
 
     /**
@@ -216,7 +228,7 @@ public class Level extends JPanel {
      */
     private List<RuleText> findPhrase(Position pos, Direction dir){
         List<RuleText> phrase = new ArrayList<>();
-        List<GameObject> cell = new ArrayList<>();
+        List<GameObject> cell;
 
         Position currentPos = pos;
         RuleText ruleText;
@@ -241,7 +253,13 @@ public class Level extends JPanel {
      * @param phrase Список из трех слов типа RuleText
      * @return Может ли список считаться правилом
      */
-    private boolean IsRule(List<RuleText> phrase){
+    private boolean isRule(List<RuleText> phrase){
+        if(phrase.getFirst() instanceof Operand firstWord &&
+                phrase.get(1) instanceof Operator secondWord &&
+                phrase.get(2) instanceof Operand thirdWord){
+            return secondWord.canInteract(firstWord, thirdWord);
+        }
+
         return false;
     }
 
@@ -324,12 +342,6 @@ public class Level extends JPanel {
         _rules = new HashSet<>();
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         _rules.add(text_is_push);
-
-        // После реализации чтения правил, удалить
-        Rule baba_is_you = new Rule(new SubjectName("BABA"), new IS(), new YOU());
-        _rules.add(baba_is_you);
-        Rule wall_is_stop = new Rule(new SubjectName("WALL"), new IS(), new STOP());
-        _rules.add(wall_is_stop);
     }
 
     /**
@@ -352,7 +364,7 @@ public class Level extends JPanel {
         List<GameObject> gameObjects = new ArrayList<>();
 
         for(GameObject gameObject : _gameObjects){
-            if(gameObject.getPosition() == pos){
+            if(gameObject.getPosition().equal(pos)){
                 gameObjects.add(gameObject);
             }
         }

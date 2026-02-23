@@ -8,4 +8,19 @@ public abstract class RuleText {
     public String getText(){
         return _word;
     }
+    public boolean isOperand(){
+        return false;
+    }
+
+    public boolean isOperator(){
+        return false;
+    }
+
+    public boolean isSubjectName(){
+        return false;
+    }
+
+    public boolean isFeature(){
+        return false;
+    }
 }

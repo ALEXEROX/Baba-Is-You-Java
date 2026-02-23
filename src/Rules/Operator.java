@@ -15,4 +15,9 @@ public abstract class Operator extends RuleText {
      *               либо превратить один объект в другой
      */
     public abstract void action(Level level, Operand left, Operand right);
+
+    @Override
+    public boolean isOperator(){
+        return true;
+    }
 }
