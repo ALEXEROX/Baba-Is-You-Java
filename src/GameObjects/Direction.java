@@ -22,4 +22,14 @@ public enum Direction {
     public int getY(){
         return _pos.getY();
     }
+
+    public Direction opposite(){
+        switch(this){
+            case RIGHT ->{ return LEFT; }
+            case LEFT ->{ return RIGHT; }
+            case UP ->{ return DOWN; }
+            case DOWN ->{ return UP; }
+            default -> {return STAY; }
+        }
+    }
 }

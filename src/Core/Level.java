@@ -43,9 +43,9 @@ public class Level extends JPanel {
      * @param dir направление движения игрока
      */
     public void makeStep(Direction dir){
-        releaseRules();
         releaseFeatures(dir);
         calculateRules();
+        releaseRules();
 
         moveGameObjects();
         checkSuccess();

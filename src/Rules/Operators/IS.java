@@ -20,13 +20,13 @@ public class IS extends Operator {
     @Override
     public void action(Level level, Operand left, Operand right) {
         List<GameObject> gameObjects = level.getGameObjects();
-
-        for(GameObject gameObject: gameObjects) {
-            if(gameObject.getName().equals(left.getText())) {
-                if (right.getClass() == SubjectName.class) {
-                    gameObject.transform(right.getText());
+        for(int index = 0; index < gameObjects.size(); index++) {
+            if(gameObjects.get(index).getName().equals(left.getText())) {
+                if (right.isSubjectName()) {
+                    gameObjects.get(index).transform(right.getText());
+                    index--;
                 } else {
-                    gameObject.addFeature((Feature) right);
+                    gameObjects.get(index).addFeature((Feature) right);
                 }
             }
         }
