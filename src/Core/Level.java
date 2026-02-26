@@ -212,7 +212,7 @@ public class Level extends JPanel {
 
     private void highlightRule(Position position, Direction direction) {
         Position currentPosition = position;
-        
+
         for(int i = 0; i < 3; i++) {
             List<GameObject> cell = getCellOnNextStep(currentPosition);
             for(GameObject gameObject : cell){
@@ -225,7 +225,7 @@ public class Level extends JPanel {
     }
 
     private Rule ruleFromPhrase(List<RuleText> phrase){
-        Operand firstWord = (Operand) phrase.getFirst();
+        Operand firstWord = (Operand) phrase.get(0);
         Operator secondWord = (Operator) phrase.get(1);
         Operand thirdWord = (Operand) phrase.get(2);
 
@@ -266,7 +266,7 @@ public class Level extends JPanel {
      * @return Может ли список считаться правилом
      */
     private boolean isRule(List<RuleText> phrase){
-        if(phrase.getFirst() instanceof Operand firstWord &&
+        if(phrase.get(0) instanceof Operand firstWord &&
                 phrase.get(1) instanceof Operator secondWord &&
                 phrase.get(2) instanceof Operand thirdWord){
             return secondWord.canInteract(firstWord, thirdWord);
@@ -333,7 +333,7 @@ public class Level extends JPanel {
         }
 
         from.destroy();
-        
+
         calculateRules();
         releaseRules();
     }
