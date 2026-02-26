@@ -58,7 +58,7 @@ public class BabaIsYouWindow extends JFrame {
         winScreen = new WinScreen(this);
         loseScreen = new LoseScreen(this);
 
-        _level = level1(); // Устанавливаем начальный уровень
+        _level = new Level(16, 10); // Устанавливаем начальный уровень
 
         mainPanel.add(menuPanel, "MENU");
         mainPanel.add(_level, "GAME");

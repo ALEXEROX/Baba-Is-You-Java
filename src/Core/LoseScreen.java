@@ -17,6 +17,9 @@ public class LoseScreen extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        setBackground(Color.BLACK);
+
+
         // Сообщение о поражении
         JLabel loseLabel = new JLabel("YOU LOSE!");
         loseLabel.setFont(new Font("Arial", Font.BOLD, 48));
@@ -28,6 +31,8 @@ public class LoseScreen extends JPanel {
 
         // Кнопка возврата в меню
         JButton menuButton = new JButton("Main Menu");
+        menuButton.setBackground(Color.BLACK);
+        menuButton.setForeground(Color.WHITE);
         menuButton.setPreferredSize(new Dimension(200, 50));
         menuButton.addActionListener(new ActionListener() {
             @Override
@@ -41,6 +46,8 @@ public class LoseScreen extends JPanel {
 
         // Кнопка повторной попытки
         JButton retryButton = new JButton("Try Again");
+        retryButton.setBackground(Color.BLACK);
+        retryButton.setForeground(Color.WHITE);
         retryButton.setPreferredSize(new Dimension(200, 50));
         retryButton.addActionListener(new ActionListener() {
             @Override

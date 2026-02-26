@@ -18,9 +18,12 @@ public class MenuPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
+        setBackground(Color.BLACK);
+
         // Заголовок
         JLabel titleLabel = new JLabel("BABA IS YOU");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -28,6 +31,8 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 1
         JButton level1Button = new JButton("Level 1");
+        level1Button.setBackground(Color.BLACK);
+        level1Button.setForeground(Color.WHITE);
         level1Button.setPreferredSize(new Dimension(200, 50));
         level1Button.addActionListener(new ActionListener() {
             @Override
@@ -43,6 +48,8 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 2
         JButton level2Button = new JButton("Level 2");
+        level2Button.setBackground(Color.BLACK);
+        level2Button.setForeground(Color.WHITE);
         level2Button.setPreferredSize(new Dimension(200, 50));
         level2Button.addActionListener(new ActionListener() {
             @Override
@@ -57,6 +64,8 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 3
         JButton level3Button = new JButton("Level 3");
+        level3Button.setBackground(Color.BLACK);
+        level3Button.setForeground(Color.WHITE);
         level3Button.setPreferredSize(new Dimension(200, 50));
         level3Button.addActionListener(new ActionListener() {
             @Override
@@ -72,6 +81,8 @@ public class MenuPanel extends JPanel {
 
         // Кнопка выхода
         JButton exitButton = new JButton("Exit");
+        exitButton.setBackground(Color.BLACK);
+        exitButton.setForeground(Color.WHITE);
         exitButton.setPreferredSize(new Dimension(200, 50));
         exitButton.addActionListener(new ActionListener() {
             @Override

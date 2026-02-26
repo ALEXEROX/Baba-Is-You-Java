@@ -17,6 +17,8 @@ public class WinScreen extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        setBackground(Color.BLACK);
+
         // Сообщение о победе
         JLabel winLabel = new JLabel("YOU WIN!");
         winLabel.setFont(new Font("Arial", Font.BOLD, 48));
@@ -28,6 +30,8 @@ public class WinScreen extends JPanel {
 
         // Кнопка возврата в меню
         JButton menuButton = new JButton("Main Menu");
+        menuButton.setBackground(Color.BLACK);
+        menuButton.setForeground(Color.WHITE);
         menuButton.setPreferredSize(new Dimension(200, 50));
         menuButton.addActionListener(new ActionListener() {
             @Override
@@ -41,6 +45,8 @@ public class WinScreen extends JPanel {
 
         // Кнопка повторной попытки
         JButton retryButton = new JButton("Play Again");
+        retryButton.setBackground(Color.BLACK);
+        retryButton.setForeground(Color.WHITE);
         retryButton.setPreferredSize(new Dimension(200, 50));
         retryButton.addActionListener(new ActionListener() {
             @Override
