@@ -12,6 +12,7 @@ public class YOU extends Feature {
     @Override
     public void action(GameObject subject, Direction direction) {
         subject.prepareMove(direction);
+        subject.addFeature(new PUSH());
     }
 
     @Override

@@ -18,11 +18,12 @@ public class PUSH extends Feature {
 
     @Override
     public void interaction(GameObject first, GameObject second, Direction direction) {
-        if(!first.canLet(direction)){
-            second.cancelMove();
-        }
-        else{
-            first.prepareMove(direction);
+        if(second.hasFeature(new PUSH())) {
+            if (!first.canLet(direction)) {
+                second.cancelMove();
+            } else {
+                first.prepareMove(direction);
+            }
         }
     }
 }

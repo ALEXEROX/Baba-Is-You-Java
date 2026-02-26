@@ -424,7 +424,6 @@ public class Level extends JPanel {
 
         drawField(g);
 
-        _gameObjects = _gameObjects.reversed();
         for (GameObject gameObject : _gameObjects) {
             drawSubject(gameObject, g);
         }
