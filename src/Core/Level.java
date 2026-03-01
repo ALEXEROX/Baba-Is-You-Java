@@ -24,6 +24,7 @@ public class Level extends JPanel {
     public final int _height;
     private List<GameObject> _gameObjects;
     private HashSet<Rule> _rules;
+    private String _id;
 
 
     //====================================Конструкторы======================================
@@ -35,6 +36,148 @@ public class Level extends JPanel {
         makeDefaultRules();
     }
 
+    public Level(int width, int height, String id){
+        this(width, height);
+        this._id = id;
+    }
+
+    public Level createCopy() {
+        switch (_id) {
+            case "LEVEL_1":
+                return createLevel1();
+            case "LEVEL_2":
+                return createLevel2();
+            case "LEVEL_3":
+                return createLevel3();
+            default:
+                return createLevel1();
+        }
+    }
+
+    public static Level createLevel1() {
+        Level level = new Level(16, 10, "LEVEL_1");
+
+        // BABA IS YOU
+        new TextBlock(new SubjectName("BABA"), level, new Position(0, 0));
+        new TextBlock(new IS(), level, new Position(1, 0));
+        new TextBlock(new YOU(), level, new Position(2, 0));
+
+        // WALL IS STOP
+        new TextBlock(new SubjectName("WALL"), level, new Position(13, 0));
+        new TextBlock(new IS(), level, new Position(14, 0));
+        new TextBlock(new STOP(), level, new Position(15, 0));
+
+        // ROCK IS PUSH
+        new TextBlock(new SubjectName("ROCK"), level, new Position(0, 9));
+        new TextBlock(new IS(), level, new Position(1, 9));
+        new TextBlock(new PUSH(), level, new Position(2, 9));
+
+        // FLAG IS WIN
+        new TextBlock(new SubjectName("FLAG"), level, new Position(13, 9));
+        new TextBlock(new IS(), level, new Position(14, 9));
+        new TextBlock(new WIN(), level, new Position(15, 9));
+
+        // Стены
+        for(int i = 0; i < 16; i++){
+            new Subject("WALL", level, new Position(i, 1));
+            new Subject("WALL", level, new Position(i, 8));
+        }
+
+        // Камни
+        for(int i = 0; i < 6; i++){
+            new Subject("ROCK", level, new Position(8, i+2));
+        }
+
+        // BABA
+        new Subject("BABA", level, new Position(3, 5));
+
+        // FLAG
+        new Subject("FLAG", level, new Position(13, 5));
+
+        return level;
+    }
+
+    public static Level createLevel2() {
+        Level level = new Level(16, 10, "LEVEL_2");
+
+        // BABA IS YOU
+        new TextBlock(new SubjectName("BABA"), level, new Position(0, 0));
+        new TextBlock(new IS(), level, new Position(1, 0));
+        new TextBlock(new YOU(), level, new Position(2, 0));
+
+        // WALL IS STOP
+        new TextBlock(new SubjectName("WALL"), level, new Position(7, 0));
+        new TextBlock(new IS(), level, new Position(8, 0));
+        new TextBlock(new STOP(), level, new Position(9, 0));
+
+        // ROCK IS PUSH
+        new TextBlock(new SubjectName("ROCK"), level, new Position(0, 7));
+        new TextBlock(new IS(), level, new Position(1, 7));
+        new TextBlock(new PUSH(), level, new Position(2, 7));
+
+        // FLAG IS WIN
+        new TextBlock(new SubjectName("FLAG"), level, new Position(7, 7));
+        new TextBlock(new IS(), level, new Position(8, 7));
+        new TextBlock(new WIN(), level, new Position(9, 7));
+
+        // Стены по краям
+        for(int i = 0; i < 10; i++){
+            new Subject("WALL", level, new Position(i, 1));
+            new Subject("WALL", level, new Position(i, 6));
+        }
+
+        // BABA
+        new Subject("BABA", level, new Position(1, 3));
+
+        // ROCK
+        new Subject("ROCK", level, new Position(4, 3));
+
+        // FLAG
+        new Subject("FLAG", level, new Position(8, 3));
+
+        return level;
+    }
+    public static Level createLevel3() {
+        Level level = new Level(12, 10, "LEVEL_3");
+
+        // BABA IS YOU
+        new TextBlock(new SubjectName("BABA"), level, new Position(0, 0));
+        new TextBlock(new IS(), level, new Position(1, 0));
+        new TextBlock(new YOU(), level, new Position(2, 0));
+
+        // WALL IS STOP
+        new TextBlock(new SubjectName("WALL"), level, new Position(9, 0));
+        new TextBlock(new IS(), level, new Position(10, 0));
+        new TextBlock(new STOP(), level, new Position(11, 0));
+
+        // ROCK IS PUSH
+        new TextBlock(new SubjectName("ROCK"), level, new Position(0, 9));
+        new TextBlock(new IS(), level, new Position(1, 9));
+        new TextBlock(new PUSH(), level, new Position(2, 9));
+
+        // FLAG IS WIN
+        new TextBlock(new SubjectName("FLAG"), level, new Position(9, 9));
+        new TextBlock(new IS(), level, new Position(10, 9));
+        new TextBlock(new WIN(), level, new Position(11, 9));
+
+        // Внутренние стены
+        for(int i = 3; i < 9; i++){
+            new Subject("WALL", level, new Position(i, 4));
+        }
+
+        // Камни
+        new Subject("ROCK", level, new Position(4, 3));
+        new Subject("ROCK", level, new Position(5, 3));
+        new Subject("ROCK", level, new Position(6, 3));
+
+        // BABA
+        new Subject("BABA", level, new Position(1, 5));
+
+        // FLAG
+        new Subject("FLAG", level, new Position(7, 5));
+
+        return level;
+    }
 
     //============================Управление-уровнем================================
 
@@ -406,6 +549,10 @@ public class Level extends JPanel {
      */
     public List<GameObject> getGameObjects(){
         return _gameObjects;
+    }
+
+    public String getId() {
+        return _id;
     }
 
     /**
