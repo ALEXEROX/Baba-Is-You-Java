@@ -127,8 +127,14 @@ public class BabaIsYouWindow extends JFrame {
     }
 
     private void handlingKey(int key){
-        Direction direction = readDirection(key);
-        releaseDirection(direction);
+        switch(key){
+            case KeyEvent.VK_ESCAPE -> switchToMenuView();
+            case KeyEvent.VK_R -> restartCurrentLevel();
+            default -> {
+                Direction direction = readDirection(key);
+                releaseDirection(direction);
+            }
+        }
     }
 
     private static Direction readDirection(int key) {
