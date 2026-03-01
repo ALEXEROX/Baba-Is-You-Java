@@ -1,24 +1,22 @@
 package Core;
 
 import GameObjects.*;
-import Rules.*;
-import Rules.Features.*;
-import Rules.Operators.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BabaIsYouWindow extends JFrame {
 
 
     //============================Поля=================================
 
-    private Level _level;
-    private int _levelSuccess;
-    private KeyListener _keyListener;
+    // Логика
+    private Level level;
+    private Status status;
+    private KeyListener keyListener;
+
+    // Визуал
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private MenuPanel menuPanel;
@@ -41,13 +39,16 @@ public class BabaIsYouWindow extends JFrame {
      * Загружает уровен для его отображения в окне
      */
     public void loadLevel(Level level){
-        if(_level != null) {
-            mainPanel.remove(_level);
+        if(this.level != null) {
+            mainPanel.remove(this.level);
         }
 
-        _level = level;
-        mainPanel.add(_level, "GAME");
-        _level.makeStep(Direction.STAY);
+        this.level = level;
+        mainPanel.add(this.level, "GAME");
+        cardLayout.show(mainPanel, "GAME");
+
+        updateWindowSize();
+        this.level.makeStep(Direction.STAY);
     }
 
     private void initializeComponents(){
@@ -58,14 +59,16 @@ public class BabaIsYouWindow extends JFrame {
         winScreen = new WinScreen(this);
         loseScreen = new LoseScreen(this);
 
-        _level = new Level(16, 10); // Устанавливаем начальный уровень
+        level = new Level(16, 10); // Устанавливаем начальный уровень
 
+        mainPanel.add(level, "GAME");
         mainPanel.add(menuPanel, "MENU");
-        mainPanel.add(_level, "GAME");
         mainPanel.add(winScreen, "WIN");
         mainPanel.add(loseScreen, "LOSE");
 
         setContentPane(mainPanel);
+
+        cardLayout.show(mainPanel, "MENU");
     }
 
     private void buildWindow(){
@@ -74,9 +77,14 @@ public class BabaIsYouWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
 
-        // Отображаем главное меню при запуске
-        cardLayout.show(mainPanel, "MENU");
+    private void updateWindowSize(){
+        pack();
+        revalidate();
+        repaint();
+        setLocationRelativeTo(null);
+        this.requestFocusInWindow();
     }
 
 
@@ -98,7 +106,7 @@ public class BabaIsYouWindow extends JFrame {
     //===================Обработчик-событий-клавиатуры==================
 
     private void createKeyListener() {
-        _keyListener = new KeyListener() {
+        keyListener = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
                 handlingKey(e.getKeyCode());
@@ -115,12 +123,16 @@ public class BabaIsYouWindow extends JFrame {
             }
         };
 
-        this.addKeyListener(_keyListener);
+        this.addKeyListener(keyListener);
     }
 
     private void handlingKey(int key){
-        Direction direction = null;
+        Direction direction = readDirection(key);
+        releaseDirection(direction);
+    }
 
+    private static Direction readDirection(int key) {
+        Direction direction = null;
         switch (key){
             case KeyEvent.VK_UP -> direction = Direction.UP;
             case KeyEvent.VK_DOWN -> direction = Direction.DOWN;
@@ -128,28 +140,31 @@ public class BabaIsYouWindow extends JFrame {
             case KeyEvent.VK_LEFT -> direction = Direction.LEFT;
             case KeyEvent.VK_SPACE -> direction = Direction.STAY;
         }
+        return direction;
+    }
 
+    private void releaseDirection(Direction direction) {
         if(direction != null) {
-            _level.makeStep(direction);
-            _levelSuccess = _level.checkSuccess();
+            level.makeStep(direction);
+            status = level.checkSuccess();
 
-            if(_levelSuccess == 1){
+            if(status == Status.WIN){
                 win();
             }
-            if(_levelSuccess == -1){
+            else if(status == Status.LOSE){
                 lose();
             }
-
-            System.out.println(_levelSuccess);
         }
     }
 
     private void lose() {
         cardLayout.show(mainPanel, "LOSE");
+        updateWindowSize();
     }
 
     private void win() {
         cardLayout.show(mainPanel, "WIN");
+        updateWindowSize();
     }
 
 
@@ -160,7 +175,7 @@ public class BabaIsYouWindow extends JFrame {
      */
     public void switchToGameView() {
         cardLayout.show(mainPanel, "GAME");
-        this.requestFocusInWindow();
+        updateWindowSize();
     }
 
     /**
@@ -168,20 +183,15 @@ public class BabaIsYouWindow extends JFrame {
      */
     public void switchToMenuView() {
         cardLayout.show(mainPanel, "MENU");
+        updateWindowSize();
     }
 
     /**
      * Перезапускает текущий уровень
      */
     public void restartCurrentLevel() {
-        // Просто создаем копию текущего уровня
-        Level newLevel = _level.createCopy();
-
-        mainPanel.remove(_level);
+        Level newLevel = level.createCopy();
         loadLevel(newLevel);
-        mainPanel.add(_level, "GAME");
-        cardLayout.show(mainPanel, "GAME");
-        this.requestFocusInWindow();
     }
 
     public static void main(String[] args) {

@@ -98,7 +98,7 @@ public class Level extends JPanel {
     }
 
     public static Level createLevel2() {
-        Level level = new Level(16, 10, "LEVEL_2");
+        Level level = new Level(10, 8, "LEVEL_2");
 
         // BABA IS YOU
         new TextBlock(new SubjectName("BABA"), level, new Position(0, 0));
@@ -422,7 +422,7 @@ public class Level extends JPanel {
      * Проверяет, не находится ли поле в состоянии победы или поражения
      * @return  1 - победа, 0 - продолжение, -1 - поражение
      */
-    public int checkSuccess(){
+    public Status checkSuccess(){
         // Проверить наличие объектов YOU
         int youGameObjects = 0;
         for(GameObject gameObject : _gameObjects){
@@ -431,7 +431,7 @@ public class Level extends JPanel {
             }
         }
         if(youGameObjects == 0){
-            return -1;
+            return Status.LOSE;
         }
 
         //Проверка победы (YOU и WIN в одной ячейке)
@@ -447,11 +447,11 @@ public class Level extends JPanel {
                 }
             }
             if(hasYOU && hasWIN){
-                return 1;
+                return Status.WIN;
             }
         }
 
-        return 0;
+        return Status.CONTINUE;
     }
 
 
@@ -505,9 +505,10 @@ public class Level extends JPanel {
      * Создает окно, закрашенное BACKGROUND_COLOR определенного размера
      */
     private void createScreen() {
-        setBounds(0, 0, _width *CELL_SIZE, _height *CELL_SIZE);
-        setPreferredSize(new Dimension(_width *CELL_SIZE, _height *CELL_SIZE) );
+        setBounds(0, 0, _width * CELL_SIZE, _height * CELL_SIZE);
+        setPreferredSize(new Dimension(_width * CELL_SIZE, _height * CELL_SIZE) );
         setBackground(BACKGOUND_COLOR);
+        revalidate();
     }
 
 

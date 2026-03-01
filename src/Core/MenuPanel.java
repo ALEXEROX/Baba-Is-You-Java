@@ -22,7 +22,7 @@ public class MenuPanel extends JPanel {
 
         // Заголовок
         JLabel titleLabel = new JLabel("BABA IS YOU");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 64));
         titleLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
