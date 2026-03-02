@@ -127,6 +127,8 @@ public class BabaIsYouWindow extends JFrame {
     }
 
     private void handlingKey(int key){
+        if(!"GAME".equals(getCurrentCard())) return;
+
         switch(key){
             case KeyEvent.VK_ESCAPE -> switchToMenuView();
             case KeyEvent.VK_R -> restartCurrentLevel();
@@ -163,14 +165,32 @@ public class BabaIsYouWindow extends JFrame {
         }
     }
 
+    /**
+     * Вызывается при поражении на уровне
+     */
     private void lose() {
         cardLayout.show(mainPanel, "LOSE");
         updateWindowSize();
     }
 
+    /**
+     * Вызывается при победе на уровне
+     */
     private void win() {
         cardLayout.show(mainPanel, "WIN");
         updateWindowSize();
+    }
+
+    private String getCurrentCard() {
+        for (Component comp : mainPanel.getComponents()) {
+            if (comp.isVisible()) {
+                if (comp == menuPanel) return "MENU";
+                if (comp == winScreen) return "WIN";
+                if (comp == loseScreen) return "LOSE";
+                if (comp == currentlevel) return "GAME";
+            }
+        }
+        return "MENU";
     }
 
 
