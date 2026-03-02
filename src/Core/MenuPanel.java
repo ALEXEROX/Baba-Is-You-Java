@@ -94,4 +94,11 @@ public class MenuPanel extends JPanel {
         gbc.gridy = 3;
         add(exitButton, gbc);
     }
+
+
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(1200, 750);
+    }
 }

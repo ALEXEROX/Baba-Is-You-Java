@@ -12,7 +12,7 @@ public class BabaIsYouWindow extends JFrame {
     //============================Поля=================================
 
     // Логика
-    private Level level;
+    private Level currentlevel;
     private Status status;
     private KeyListener keyListener;
 
@@ -39,16 +39,16 @@ public class BabaIsYouWindow extends JFrame {
      * Загружает уровен для его отображения в окне
      */
     public void loadLevel(Level level){
-        if(this.level != null) {
-            mainPanel.remove(this.level);
+        if(currentlevel != null) {
+            mainPanel.remove(currentlevel);
         }
 
-        this.level = level;
-        mainPanel.add(this.level, "GAME");
+        currentlevel = level;
+        mainPanel.add(currentlevel, "GAME");
         cardLayout.show(mainPanel, "GAME");
+        currentlevel.makeStep(Direction.STAY);
 
         updateWindowSize();
-        this.level.makeStep(Direction.STAY);
     }
 
     private void initializeComponents(){
@@ -59,9 +59,9 @@ public class BabaIsYouWindow extends JFrame {
         winScreen = new WinScreen(this);
         loseScreen = new LoseScreen(this);
 
-        level = new Level(16, 10); // Устанавливаем начальный уровень
+        currentlevel = new Level(16, 10); // Устанавливаем начальный уровень
 
-        mainPanel.add(level, "GAME");
+        mainPanel.add(currentlevel, "GAME");
         mainPanel.add(menuPanel, "MENU");
         mainPanel.add(winScreen, "WIN");
         mainPanel.add(loseScreen, "LOSE");
@@ -151,8 +151,8 @@ public class BabaIsYouWindow extends JFrame {
 
     private void releaseDirection(Direction direction) {
         if(direction != null) {
-            level.makeStep(direction);
-            status = level.checkSuccess();
+            currentlevel.makeStep(direction);
+            status = currentlevel.checkSuccess();
 
             if(status == Status.WIN){
                 win();
@@ -181,6 +181,7 @@ public class BabaIsYouWindow extends JFrame {
      */
     public void switchToGameView() {
         cardLayout.show(mainPanel, "GAME");
+        mainPanel.remove(menuPanel);
         updateWindowSize();
     }
 
@@ -188,7 +189,9 @@ public class BabaIsYouWindow extends JFrame {
      * Переключает отображение на главное меню
      */
     public void switchToMenuView() {
+        mainPanel.add(menuPanel, "MENU");
         cardLayout.show(mainPanel, "MENU");
+        mainPanel.remove(currentlevel);
         updateWindowSize();
     }
 
@@ -196,7 +199,7 @@ public class BabaIsYouWindow extends JFrame {
      * Перезапускает текущий уровень
      */
     public void restartCurrentLevel() {
-        Level newLevel = level.createCopy();
+        Level newLevel = currentlevel.createCopy();
         loadLevel(newLevel);
     }
 
