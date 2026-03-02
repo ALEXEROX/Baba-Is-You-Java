@@ -1,11 +1,11 @@
 package GameObjects;
 
 public class Position {
-    private int _x;
-    private int _y;
+    private int x;
+    private int y;
 
     public Position(int x, int y){
-        _x = x; _y = y;
+        this.x = x; this.y = y;
     }
 
     public Position() {
@@ -13,18 +13,18 @@ public class Position {
     }
 
     public int getX(){
-        return _x;
+        return x;
     }
 
     public int getY(){
-        return _y;
+        return y;
     }
 
     public Position getNeightboor(Direction dir){
-        return new Position(_x + dir.getX(), _y + dir.getY());
+        return new Position(x + dir.getX(), y + dir.getY());
     }
 
     public boolean equal(Position pos){
-        return _x == pos.getX() && _y == pos.getY();
+        return x == pos.getX() && y == pos.getY();
     }
 }

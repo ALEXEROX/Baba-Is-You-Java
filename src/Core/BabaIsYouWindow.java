@@ -44,13 +44,16 @@ public class BabaIsYouWindow extends JFrame {
         }
 
         currentlevel = level;
-        mainPanel.add(currentlevel, "GAME");
-        cardLayout.show(mainPanel, "GAME");
+        mainPanel.add(currentlevel, "LEVEL");
+        cardLayout.show(mainPanel, "LEVEL");
         currentlevel.makeStep(Direction.STAY);
 
         updateWindowSize();
     }
 
+    /**
+     * Создает физуальные компоненты
+     */
     private void initializeComponents(){
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -61,7 +64,7 @@ public class BabaIsYouWindow extends JFrame {
 
         currentlevel = new Level(16, 10); // Устанавливаем начальный уровень
 
-        mainPanel.add(currentlevel, "GAME");
+        mainPanel.add(currentlevel, "LEVEL");
         mainPanel.add(menuPanel, "MENU");
         mainPanel.add(winScreen, "WIN");
         mainPanel.add(loseScreen, "LOSE");
@@ -71,6 +74,9 @@ public class BabaIsYouWindow extends JFrame {
         cardLayout.show(mainPanel, "MENU");
     }
 
+    /**
+     * Создает окно
+     */
     private void buildWindow(){
         pack();
         this.setResizable(false);
@@ -79,6 +85,9 @@ public class BabaIsYouWindow extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Меняет размер окна под размеры уровня или меню
+     */
     private void updateWindowSize(){
         pack();
         revalidate();
@@ -126,8 +135,12 @@ public class BabaIsYouWindow extends JFrame {
         this.addKeyListener(keyListener);
     }
 
+    /**
+     * Обработка нажатой клавиши
+     * @param key клавиша
+     */
     private void handlingKey(int key){
-        if(!"GAME".equals(getCurrentCard())) return;
+        if(!"LEVEL".equals(getCurrentCard())) return; // Работает только находясь на уровне
 
         switch(key){
             case KeyEvent.VK_ESCAPE -> switchToMenuView();
@@ -181,13 +194,16 @@ public class BabaIsYouWindow extends JFrame {
         updateWindowSize();
     }
 
+    /**
+     * @return Какой визуальный компонент сейчас отображается
+     */
     private String getCurrentCard() {
         for (Component comp : mainPanel.getComponents()) {
             if (comp.isVisible()) {
                 if (comp == menuPanel) return "MENU";
                 if (comp == winScreen) return "WIN";
                 if (comp == loseScreen) return "LOSE";
-                if (comp == currentlevel) return "GAME";
+                if (comp == currentlevel) return "LEVEL";
             }
         }
         return "MENU";
@@ -200,7 +216,7 @@ public class BabaIsYouWindow extends JFrame {
      * Переключает отображение на игровой экран
      */
     public void switchToGameView() {
-        cardLayout.show(mainPanel, "GAME");
+        cardLayout.show(mainPanel, "LEVEL");
         mainPanel.remove(menuPanel);
         updateWindowSize();
     }
@@ -219,8 +235,7 @@ public class BabaIsYouWindow extends JFrame {
      * Перезапускает текущий уровень
      */
     public void restartCurrentLevel() {
-        Level newLevel = currentlevel.createCopy();
-        loadLevel(newLevel);
+        loadLevel(currentlevel.createCopy());
     }
 
     public static void main(String[] args) {

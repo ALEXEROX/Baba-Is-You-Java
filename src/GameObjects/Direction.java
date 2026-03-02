@@ -9,18 +9,18 @@ public enum Direction {
     LEFT(new Position(-1, 0)),
     ;
 
+    private final Position position;
+
     Direction(Position pos) {
-        _pos = pos;
+        position = pos;
     }
 
-    private final Position _pos;
-
     public int getX(){
-        return _pos.getX();
+        return position.getX();
     }
 
     public int getY(){
-        return _pos.getY();
+        return position.getY();
     }
 
     public Direction opposite(){

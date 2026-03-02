@@ -20,38 +20,34 @@ public class Level extends JPanel {
 
     //==========================Поля================================
 
-    public final int _width;
-    public final int _height;
-    private List<GameObject> _gameObjects;
-    private HashSet<Rule> _rules;
-    private String _id;
+    public final int width;
+    public final int height;
+    private List<GameObject> gameObjects;
+    private HashSet<Rule> rules;
+    private String id;
 
 
     //====================================Конструкторы======================================
 
     public Level(int width, int height){
-        _width = width; _height = height;
-        _gameObjects = new ArrayList<>();
+        this.width = width; this.height = height;
+        gameObjects = new ArrayList<>();
         createScreen();
         makeDefaultRules();
     }
 
     public Level(int width, int height, String id){
         this(width, height);
-        this._id = id;
+        this.id = id;
     }
 
     public Level createCopy() {
-        switch (_id) {
-            case "LEVEL_1":
-                return createLevel1();
-            case "LEVEL_2":
-                return createLevel2();
-            case "LEVEL_3":
-                return createLevel3();
-            default:
-                return createLevel1();
-        }
+        return switch (id) {
+            case "LEVEL_1" -> createLevel1();
+            case "LEVEL_2" -> createLevel2();
+            case "LEVEL_3" -> createLevel3();
+            default -> createLevel1();
+        };
     }
 
     public static Level createLevel1() {
@@ -186,12 +182,15 @@ public class Level extends JPanel {
      * @param direction направление движения игрока
      */
     public void makeStep(Direction direction){
+        // Выполняем игровые правила (движения, остановки и тп)
         releaseFeatures(direction);
         moveGameObjects();
 
+        // Пересчитывем и выполняем пересчитанные правила
         calculateRules();
         releaseRules();
 
+        // Обновляем состояние уровня (победа/поражение и перерисовка)
         checkSuccess();
         repaint();
     }
@@ -200,13 +199,13 @@ public class Level extends JPanel {
      * Двигает все игровые объекты на поле
      */
     private void moveGameObjects() {
-        for(GameObject gameObject: _gameObjects){
+        for(GameObject gameObject: gameObjects){
             gameObject.move();
         }
     }
 
     /**
-     * Проверяет, сможет ли какой-био объект войти в тпроверяемую ячейку
+     * Проверяет, сможет ли какой-био объект войти в проверяемую ячейку
      * @param position проверяемая ячейка
      * @param direction направление движения объектов на текущем шаге
      */
@@ -214,10 +213,10 @@ public class Level extends JPanel {
         List<GameObject> gameObjects = getCellOnNextStep(position);
 
         for(GameObject gameObject : gameObjects){
-            if(gameObject.hasFeature(new STOP())) {
+            if(gameObject.hasFeature(STOP.class)) {
                 return false;
             }
-            if(gameObject.hasFeature(new PUSH())){
+            if(gameObject.hasFeature(PUSH.class)){
                 if(!canLetTo(gameObject.getNextPosition().getNeightboor(direction), direction)){
                     return false;
                 }
@@ -231,7 +230,7 @@ public class Level extends JPanel {
      * Выполняет правила
      */
     private void releaseRules() {
-        for(Rule rule : _rules){
+        for(Rule rule : rules){
             rule.release(this);
         }
     }
@@ -254,16 +253,16 @@ public class Level extends JPanel {
     private void sortGameObjects(Direction direction) {
         switch (direction) {
             case RIGHT:
-                _gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getX(), g2.getPosition().getX()));
+                gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getX(), g2.getPosition().getX()));
                 break;
             case LEFT:
-                _gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getX(), g1.getPosition().getX()));
+                gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getX(), g1.getPosition().getX()));
                 break;
             case DOWN:
-                _gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getY(), g2.getPosition().getY()));
+                gameObjects.sort((g1, g2) -> Integer.compare(g1.getPosition().getY(), g2.getPosition().getY()));
                 break;
             case UP:
-                _gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getY(), g1.getPosition().getY()));
+                gameObjects.sort((g1, g2) -> Integer.compare(g2.getPosition().getY(), g1.getPosition().getY()));
                 break;
         }
     }
@@ -274,7 +273,7 @@ public class Level extends JPanel {
      * @param direction навправление движения объектов
      */
     private void releaseActions(Direction direction) {
-        for(GameObject gameObject : _gameObjects){
+        for(GameObject gameObject : gameObjects){
             for(Feature feature : gameObject.getFeatures()){
                 feature.action(gameObject, direction);
             }
@@ -287,7 +286,7 @@ public class Level extends JPanel {
      * @param direction навправление движения объектов
      */
     private void releaseInteractions(Direction direction) {
-        for(GameObject gameObject : _gameObjects) {
+        for(GameObject gameObject : gameObjects) {
             releaseInteractionsInCell(gameObject.getNextPosition(), direction);
         }
     }
@@ -316,43 +315,74 @@ public class Level extends JPanel {
      * Находит правила, описанные на поле
      */
     public void calculateRules(){
+        deactivateTextBlocks();
         makeDefaultRules();
+        findAndHighlightRules();
+    }
 
-        for(GameObject gameObject : _gameObjects){
+    /**
+     * Находит и выделяет правила на уровне
+     */
+    private void findAndHighlightRules() {
+        for(GameObject gameObject : gameObjects){
+            rules.addAll(findAndHighlightRulesInPosition(gameObject.getNextPosition()));
+        }
+    }
+
+    /**
+     * Деактивирует текстовые блок (делает серыми,
+     * что означает непривязаность к составленному на уровне правилу)
+     */
+    private void deactivateTextBlocks() {
+        for(GameObject gameObject : gameObjects){
             gameObject.clearFeatures();
             if(gameObject instanceof TextBlock textBlock){
                 textBlock.deactivate();
             }
         }
-
-        for(GameObject gameObject : _gameObjects){
-            _rules.addAll(findRules(gameObject.getNextPosition()));
-        }
     }
 
     /**
-     * Находит правила, корень которых находится в положении pos
-     * @param pos Начальное положение предпологаемых правил
+     * Находит и выделяет правила, корень которых находится в положении position
+     * @param position начальное положение предпологаемых правил
      * @return Уникальный список правил
      */
-    public HashSet<Rule> findRules(Position pos){
+    public HashSet<Rule> findAndHighlightRulesInPosition(Position position){
         HashSet<Rule> rules = new HashSet<>();
 
-        List<RuleText> leftToRightPhrase = findPhrase(pos, Direction.RIGHT);
-        List<RuleText> topToBottomPhrase = findPhrase(pos, Direction.DOWN);
-
-        if(isRule(leftToRightPhrase)){
-            rules.add(ruleFromPhrase(leftToRightPhrase));
-            highlightRule(pos, Direction.RIGHT);
-        }
-        if(isRule(topToBottomPhrase)){
-            rules.add(ruleFromPhrase(topToBottomPhrase));
-            highlightRule(pos, Direction.DOWN);
-        }
+        Rule rule;
+        if((rule = findAndHighlightRulesInPositionByDirection(position, Direction.RIGHT)) != null)
+            rules.add(rule);
+        if((rule = findAndHighlightRulesInPositionByDirection(position, Direction.DOWN)) != null)
+            rules.add(rule);
 
         return rules;
     }
 
+    /**
+     * Находит и выделяет правило
+     * @param position начальное положение предпологаемого правила
+     * @param direction направление чтения предпологаемого правила
+     * @return Правило
+     */
+    public Rule findAndHighlightRulesInPositionByDirection(Position position, Direction direction){
+        Rule rule = null;
+        if(direction == Direction.STAY) return rule;
+
+        List<RuleText> phrase = findPhrase(position, direction);
+        if(isRule(phrase)){
+            rule = ruleFromPhrase(phrase);
+            highlightRule(position, direction);
+        }
+
+        return rule;
+    }
+
+    /**
+     * Выделяет (подсвечивает) правило
+     * @param position начальное положение правила
+     * @param direction направлени чтения правила
+     */
     private void highlightRule(Position position, Direction direction) {
         Position currentPosition = position;
 
@@ -367,6 +397,9 @@ public class Level extends JPanel {
         }
     }
 
+    /**
+     * Создает правило из набора RuleText
+     */
     private Rule ruleFromPhrase(List<RuleText> phrase){
         Operand firstWord = (Operand) phrase.get(0);
         Operator secondWord = (Operator) phrase.get(1);
@@ -377,35 +410,33 @@ public class Level extends JPanel {
 
     /**
      * Находит словосочетание из трех в ряд стоящих ячеек
-     * @param pos Положение первого слова фразы
-     * @param dir Направление поиска
+     * @param position положение первого слова фразы
+     * @param direction направление чтения
      * @return Сочетание слов
      */
-    private List<RuleText> findPhrase(Position pos, Direction dir){
+    private List<RuleText> findPhrase(Position position, Direction direction){
         List<RuleText> phrase = new ArrayList<>();
-        List<GameObject> cell;
-
-        Position currentPos = pos;
-        RuleText ruleText;
+        Position currentPos = position;
 
         for(int i = 0; i < 3; i++) {
-            ruleText = null;
-            cell = getCellOnNextStep(currentPos);
+            RuleText ruleText = null;
+            List<GameObject> cell = getCellOnNextStep(currentPos);
 
             for (GameObject gameObject : cell) {
                 if (gameObject.isTextBlock()){
                     ruleText = ((TextBlock) gameObject).getRuleText();
+                    break;
                 }
             }
             phrase.add(ruleText);
-            currentPos = currentPos.getNeightboor(dir);
+            currentPos = currentPos.getNeightboor(direction);
         }
 
         return phrase;
     }
 
     /**
-     * @param phrase Список из трех слов типа RuleText
+     * @param phrase cписок из трех слов типа RuleText
      * @return Может ли список считаться правилом
      */
     private boolean isRule(List<RuleText> phrase){
@@ -419,43 +450,66 @@ public class Level extends JPanel {
     }
 
     /**
-     * Проверяет, не находится ли поле в состоянии победы или поражения
-     * @return  1 - победа, 0 - продолжение, -1 - поражение
+     * @return  Состояние уровня (победа, поражение, продолжение)
      */
     public Status checkSuccess(){
         // Проверить наличие объектов YOU
+        if(!hasYouObjects())
+            return Status.LOSE;
+
+        // Проверка победы (YOU и WIN в одной ячейке)
+        if(hasYouWithWin())
+            return Status.WIN;
+
+        // Если нет ни победы, ни поражения, продолжаем
+        return Status.CONTINUE;
+    }
+
+    /**
+     * @return количество объектов со свойством YOU на уровне
+     */
+    private boolean hasYouObjects(){
         int youGameObjects = 0;
-        for(GameObject gameObject : _gameObjects){
-            if(gameObject.hasFeature(new YOU())){
+        for(GameObject gameObject : gameObjects){
+            if(gameObject.hasFeature(YOU.class)){
                 youGameObjects++;
             }
         }
-        if(youGameObjects == 0){
-            return Status.LOSE;
-        }
+        return youGameObjects > 0;
+    }
 
-        //Проверка победы (YOU и WIN в одной ячейке)
-        for(GameObject gameObject : _gameObjects){
+    /**
+     * @return есть ли ячейки, в который находятся объекты со
+     * свойствами YOU и WIN одновременно
+     */
+    private boolean hasYouWithWin(){
+        for(GameObject gameObject : gameObjects){
             List<GameObject> cell = getCell(gameObject.getPosition());
             boolean hasYOU = false, hasWIN = false;
             for(GameObject objectInCell : cell){
-                if(objectInCell.hasFeature(new YOU())){
+                if(objectInCell.hasFeature(YOU.class)){
                     hasYOU = true;
                 }
-                if(objectInCell.hasFeature(new WIN())){
+                if(objectInCell.hasFeature(WIN.class)){
                     hasWIN = true;
                 }
             }
             if(hasYOU && hasWIN){
-                return Status.WIN;
+                return true;
             }
         }
-
-        return Status.CONTINUE;
+        return false;
     }
 
 
     //===========================Управление-объектами===============================
+
+    /**
+     * Добавить GameObject в уровень
+     */
+    public void addGameObject(GameObject gameObject){
+        gameObjects.add(gameObject);
+    }
 
     /**
      * Превращает один gameObject в другой
@@ -465,18 +519,20 @@ public class Level extends JPanel {
      */
     public void transformGameObject(GameObject from, String to){
         Position pos = from.getPosition();
-        GameObject newGameObject;
 
+        // Создаем новый объект
         if(!Objects.equals(to, "TEXT")){
-            newGameObject = new Subject(to,this, pos);
+            new Subject(to,this, pos);
         }
         else{
             SubjectName subjectName = new SubjectName(from.getName());
-            newGameObject = new TextBlock(subjectName, this, pos);
+            new TextBlock(subjectName, this, pos);
         }
 
+        // Удаляем старый объект
         from.destroy();
 
+        // Пересчитывем и выполняем пересчитанные правила
         calculateRules();
         releaseRules();
     }
@@ -486,7 +542,7 @@ public class Level extends JPanel {
      * Уничтожает объект с поля
      */
     public void destroyGameObject(GameObject gameObject){
-        _gameObjects.remove(gameObject);
+        gameObjects.remove(gameObject);
         gameObject = null;
     }
 
@@ -496,17 +552,19 @@ public class Level extends JPanel {
      * Обнуляет текущий список правил и добавляет список правил по умолчанию
      */
     public void makeDefaultRules(){
-        _rules = new HashSet<>();
+        rules = new HashSet<>();
+
+        // TEXT IS PUSH
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
-        _rules.add(text_is_push);
+        rules.add(text_is_push);
     }
 
     /**
      * Создает окно, закрашенное BACKGROUND_COLOR определенного размера
      */
     private void createScreen() {
-        setBounds(0, 0, _width * CELL_SIZE, _height * CELL_SIZE);
-        setPreferredSize(new Dimension(_width * CELL_SIZE, _height * CELL_SIZE) );
+        setBounds(0, 0, width * CELL_SIZE, height * CELL_SIZE);
+        setPreferredSize(new Dimension(width * CELL_SIZE, height * CELL_SIZE) );
         setBackground(BACKGOUND_COLOR);
         revalidate();
     }
@@ -521,7 +579,7 @@ public class Level extends JPanel {
     public List<GameObject> getCell(Position pos){
         List<GameObject> gameObjects = new ArrayList<>();
 
-        for(GameObject gameObject : _gameObjects){
+        for(GameObject gameObject : this.gameObjects){
             if(gameObject.getPosition().equal(pos)){
                 gameObjects.add(gameObject);
             }
@@ -536,7 +594,7 @@ public class Level extends JPanel {
     public List<GameObject> getCellOnNextStep(Position pos){
         List<GameObject> gameObjects = new ArrayList<>();
 
-        for(GameObject gameObject : _gameObjects){
+        for(GameObject gameObject : this.gameObjects){
             if(gameObject.getNextPosition().equal(pos)){
                 gameObjects.add(gameObject);
             }
@@ -549,18 +607,14 @@ public class Level extends JPanel {
      * @return все GameObject на уровне
      */
     public List<GameObject> getGameObjects(){
-        return _gameObjects;
-    }
-
-    public String getId() {
-        return _id;
+        return gameObjects;
     }
 
     /**
-     * Добавить GameObject в уровень
+     * @return id уровня
      */
-    public void addGameObject(GameObject gameObject){
-        _gameObjects.add(gameObject);
+    public String getId() {
+        return id;
     }
 
 
@@ -571,18 +625,30 @@ public class Level extends JPanel {
         super.paint(g);
 
         drawField(g);
+        drawGameObjects(g);
+    }
 
-        for (GameObject gameObject : _gameObjects) {
-            drawSubject(gameObject, g);
+    /**
+     * Закрашивает окно фоновым цветом в соответствии с размером уровня
+     */
+    private void drawField(Graphics g){
+        g.setColor(BACKGOUND_COLOR);
+        g.fillRect(0, 0, width * CELL_SIZE, height * CELL_SIZE);
+    }
+
+    /**
+     * Рисует все объекты на уровне
+     */
+    private void drawGameObjects(Graphics g) {
+        for (GameObject gameObject : gameObjects) {
+            drawGameObject(gameObject, g);
         }
     }
 
-    private void drawField(Graphics g){
-        g.setColor(BACKGOUND_COLOR);
-        g.fillRect(0, 0, _width *CELL_SIZE, _height *CELL_SIZE);
-    }
-
-    private void drawSubject(GameObject gameObject, Graphics g) {
+    /**
+     * Рисует GameObject
+     */
+    private void drawGameObject(GameObject gameObject, Graphics g) {
         TexturePaint texture = new TexturePaint(gameObject.getImage(), new Rectangle(CELL_SIZE, CELL_SIZE));
         Position pos = gameObject.getPosition();
         Graphics2D g2d = (Graphics2D) g;
@@ -593,7 +659,7 @@ public class Level extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(_width * CELL_SIZE,
-                _height * CELL_SIZE);
+        return new Dimension(width * CELL_SIZE,
+                height * CELL_SIZE);
     }
 }

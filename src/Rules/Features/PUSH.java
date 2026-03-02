@@ -18,7 +18,7 @@ public class PUSH extends Feature {
 
     @Override
     public void interaction(GameObject first, GameObject second, Direction direction) {
-        if(second.hasFeature(new PUSH())) {
+        if(second.hasFeature(PUSH.class)) {
             if (!first.canLet(direction)) {
                 second.cancelMove();
             } else {

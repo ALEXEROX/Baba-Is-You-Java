@@ -24,9 +24,12 @@ public class TextBlock extends GameObject {
 
     private void createText(RuleText ruleText){
         _ruleText = ruleText; _color = INACTIVE_COLOR;
-        _image = createOptimalTextImage(_ruleText.getText());
+        texture = createOptimalTextImage(_ruleText.getText());
     }
 
+    /**
+     * Создает текстуру текста
+     */
     private BufferedImage createOptimalTextImage(String text) {
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
@@ -51,6 +54,13 @@ public class TextBlock extends GameObject {
         return image;
     }
 
+    /**
+     * Находит оптимальный размер шрифта для текстуры
+     * @param text текст
+     * @param maxWidth максимальная длина
+     * @param maxHeight максимальная высота
+     * @return размер шрифта
+     */
     private int findOptimalFontSize(Graphics2D g2d, String text,
                                            int maxWidth, int maxHeight) {
         int minSize = 1;
@@ -76,13 +86,19 @@ public class TextBlock extends GameObject {
         return optimalSize;
     }
 
+    /**
+     * Активирует (подсвечивает) текст
+     */
     public void activate(){
         _color = ACTIVE_COLOR;
-        _image = createOptimalTextImage(_ruleText.getText());
+        texture = createOptimalTextImage(_ruleText.getText());
     }
 
+    /**
+     * Деактивирует (приглушает) текст
+     */
     public void deactivate(){
         _color = INACTIVE_COLOR;
-        _image = createOptimalTextImage(_ruleText.getText());
+        texture = createOptimalTextImage(_ruleText.getText());
     }
 }
