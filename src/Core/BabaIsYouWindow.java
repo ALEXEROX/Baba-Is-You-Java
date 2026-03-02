@@ -8,7 +8,6 @@ import java.awt.event.*;
 
 public class BabaIsYouWindow extends JFrame {
 
-
     //============================Поля=================================
 
     // Логика
@@ -17,12 +16,11 @@ public class BabaIsYouWindow extends JFrame {
     private KeyListener keyListener;
 
     // Визуал
-    private CardLayout cardLayout;
-    private JPanel mainPanel;
+    private JLayeredPane layeredPane;
+    private JPanel levelContainer;
+    private WinOverlay winOverlay;
+    private LoseOverlay loseOverlay;
     private MenuPanel menuPanel;
-    private WinScreen winScreen;
-    private LoseScreen loseScreen;
-
 
     //==========================Конструктор============================
 
@@ -32,7 +30,6 @@ public class BabaIsYouWindow extends JFrame {
         buildWindow();
     }
 
-
     //=======================Управление-окном===========================
 
     /**
@@ -40,38 +37,96 @@ public class BabaIsYouWindow extends JFrame {
      */
     public void loadLevel(Level level){
         if(currentlevel != null) {
-            mainPanel.remove(currentlevel);
+            levelContainer.remove(currentlevel);
         }
 
         currentlevel = level;
-        mainPanel.add(currentlevel, "LEVEL");
-        cardLayout.show(mainPanel, "LEVEL");
-        currentlevel.makeStep(Direction.STAY);
+        levelContainer.add(currentlevel, BorderLayout.CENTER);
 
-        updateWindowSize();
+        // Обновляем размеры всех компонентов под новый уровень
+        updateAllSizes();
+
+        // Скрываем меню и оверлеи, показываем уровень
+        menuPanel.setVisible(false);
+        winOverlay.setVisible(false);
+        loseOverlay.setVisible(false);
+        levelContainer.setVisible(true);
+
+        currentlevel.makeStep(Direction.STAY);
+        this.requestFocusInWindow();
+    }
+
+    /**
+     * Обновляет размеры всех компонентов под текущий уровень
+     */
+    private void updateAllSizes() {
+        if (currentlevel != null) {
+            Dimension levelSize = currentlevel.getPreferredSize();
+
+            // Обновляем размер основного окна
+            setSize(levelSize.width, levelSize.height);
+
+            // Обновляем размеры layeredPane
+            layeredPane.setPreferredSize(levelSize);
+            layeredPane.setSize(levelSize);
+
+            // Обновляем размеры всех компонентов
+            levelContainer.setBounds(0, 0, levelSize.width, levelSize.height);
+            menuPanel.setBounds(0, 0, levelSize.width, levelSize.height);
+            winOverlay.setBounds(0, 0, levelSize.width, levelSize.height);
+            loseOverlay.setBounds(0, 0, levelSize.width, levelSize.height);
+
+            // Обновляем предпочтительные размеры меню (если оно статичное)
+            menuPanel.setPreferredSize(levelSize);
+
+            pack();
+            revalidate();
+            repaint();
+        }
     }
 
     /**
      * Создает физуальные компоненты
      */
     private void initializeComponents(){
-        cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+        layeredPane = new JLayeredPane();
 
+        // Начальный размер (пока нет уровня)
+        Dimension initialSize = new Dimension(1200, 750);
+        layeredPane.setPreferredSize(initialSize);
+
+        // Контейнер для уровня (будет на заднем плане)
+        levelContainer = new JPanel(new BorderLayout());
+        levelContainer.setBounds(0, 0, initialSize.width, initialSize.height);
+
+        // Создаем начальный уровень для инициализации
+        currentlevel = new Level(16, 10);
+        levelContainer.add(currentlevel, BorderLayout.CENTER);
+
+        // Создаем оверлеи (полупрозрачные)
+        winOverlay = new WinOverlay(this);
+        winOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
+        winOverlay.setVisible(false);
+
+        loseOverlay = new LoseOverlay(this);
+        loseOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
+        loseOverlay.setVisible(false);
+
+        // Меню
         menuPanel = new MenuPanel(this);
-        winScreen = new WinScreen(this);
-        loseScreen = new LoseScreen(this);
+        menuPanel.setBounds(0, 0, initialSize.width, initialSize.height);
 
-        currentlevel = new Level(16, 10); // Устанавливаем начальный уровень
+        // Добавляем все в layeredPane с разными уровнями
+        layeredPane.add(levelContainer, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(winOverlay, JLayeredPane.MODAL_LAYER);
+        layeredPane.add(loseOverlay, JLayeredPane.MODAL_LAYER);
 
-        mainPanel.add(currentlevel, "LEVEL");
-        mainPanel.add(menuPanel, "MENU");
-        mainPanel.add(winScreen, "WIN");
-        mainPanel.add(loseScreen, "LOSE");
+        setContentPane(layeredPane);
 
-        setContentPane(mainPanel);
-
-        cardLayout.show(mainPanel, "MENU");
+        // Показываем меню
+        menuPanel.setVisible(true);
+        levelContainer.setVisible(false);
     }
 
     /**
@@ -84,18 +139,6 @@ public class BabaIsYouWindow extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
-    /**
-     * Меняет размер окна под размеры уровня или меню
-     */
-    private void updateWindowSize(){
-        pack();
-        revalidate();
-        repaint();
-        setLocationRelativeTo(null);
-        this.requestFocusInWindow();
-    }
-
 
     //==============================Уровни==============================
 
@@ -110,7 +153,6 @@ public class BabaIsYouWindow extends JFrame {
     public Level level3(){
         return Level.createLevel3();
     }
-
 
     //===================Обработчик-событий-клавиатуры==================
 
@@ -140,7 +182,7 @@ public class BabaIsYouWindow extends JFrame {
      * @param key клавиша
      */
     private void handlingKey(int key){
-        if(!"LEVEL".equals(getCurrentCard())) return; // Работает только находясь на уровне
+        if(!isLevelVisible()) return; // Работает только находясь на уровне
 
         switch(key){
             case KeyEvent.VK_ESCAPE -> switchToMenuView();
@@ -150,6 +192,15 @@ public class BabaIsYouWindow extends JFrame {
                 releaseDirection(direction);
             }
         }
+    }
+
+    /**
+     * Проверяет, виден ли уровень (не меню и не оверлеи)
+     */
+    private boolean isLevelVisible() {
+        return levelContainer.isVisible() &&
+                !winOverlay.isVisible() &&
+                !loseOverlay.isVisible();
     }
 
     private static Direction readDirection(int key) {
@@ -182,53 +233,54 @@ public class BabaIsYouWindow extends JFrame {
      * Вызывается при поражении на уровне
      */
     private void lose() {
-        cardLayout.show(mainPanel, "LOSE");
-        updateWindowSize();
+        winOverlay.setVisible(false);
+        loseOverlay.setVisible(true);
+        levelContainer.setVisible(true);
+        // Не меняем размер окна при поражении
+        this.requestFocusInWindow();
     }
 
     /**
      * Вызывается при победе на уровне
      */
     private void win() {
-        cardLayout.show(mainPanel, "WIN");
-        updateWindowSize();
+        loseOverlay.setVisible(false);
+        winOverlay.setVisible(true);
+        levelContainer.setVisible(true);
+        // Не меняем размер окна при победе
+        this.requestFocusInWindow();
     }
-
-    /**
-     * @return Какой визуальный компонент сейчас отображается
-     */
-    private String getCurrentCard() {
-        for (Component comp : mainPanel.getComponents()) {
-            if (comp.isVisible()) {
-                if (comp == menuPanel) return "MENU";
-                if (comp == winScreen) return "WIN";
-                if (comp == loseScreen) return "LOSE";
-                if (comp == currentlevel) return "LEVEL";
-            }
-        }
-        return "MENU";
-    }
-
-
-    //===============================MAIN================================
 
     /**
      * Переключает отображение на игровой экран
      */
     public void switchToGameView() {
-        cardLayout.show(mainPanel, "LEVEL");
-        mainPanel.remove(menuPanel);
-        updateWindowSize();
+        menuPanel.setVisible(false);
+        winOverlay.setVisible(false);
+        loseOverlay.setVisible(false);
+        levelContainer.setVisible(true);
+        // Размер уже должен быть правильным после loadLevel
+        this.requestFocusInWindow();
     }
 
     /**
      * Переключает отображение на главное меню
      */
     public void switchToMenuView() {
-        mainPanel.add(menuPanel, "MENU");
-        cardLayout.show(mainPanel, "MENU");
-        mainPanel.remove(currentlevel);
-        updateWindowSize();
+        menuPanel.setVisible(true);
+        winOverlay.setVisible(false);
+        loseOverlay.setVisible(false);
+        levelContainer.setVisible(false);
+
+        // Возвращаем размер для меню
+        Dimension menuSize = menuPanel.getPreferredSize();
+        layeredPane.setPreferredSize(menuSize);
+        layeredPane.setSize(menuSize);
+        menuPanel.setBounds(0, 0, menuSize.width, menuSize.height);
+
+        pack();
+        setLocationRelativeTo(null);
+        this.requestFocusInWindow();
     }
 
     /**
@@ -237,6 +289,8 @@ public class BabaIsYouWindow extends JFrame {
     public void restartCurrentLevel() {
         loadLevel(currentlevel.createCopy());
     }
+
+    //===============================MAIN================================
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
