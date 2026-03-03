@@ -33,6 +33,7 @@ public class Level extends JPanel {
         this.width = width; this.height = height;
         gameObjects = new ArrayList<>();
         createScreen();
+        buildBorder();
         makeDefaultRules();
     }
 
@@ -48,6 +49,17 @@ public class Level extends JPanel {
             case "LEVEL_3" -> createLevel3();
             default -> createLevel1();
         };
+    }
+
+    private void buildBorder(){
+        for(int x = 0; x < width; x++){
+            new Subject("INVISIBLE_WALL", this, new Position(x, -1));
+            new Subject("INVISIBLE_WALL", this, new Position(x, height));
+        }
+        for(int y = 0; y < height; y++){
+            new Subject("INVISIBLE_WALL", this, new Position(-1, y));
+            new Subject("INVISIBLE_WALL", this, new Position(width, y));
+        }
     }
 
     public static Level createLevel1() {
@@ -92,7 +104,6 @@ public class Level extends JPanel {
 
         return level;
     }
-
     public static Level createLevel2() {
         Level level = new Level(10, 8, "LEVEL_2");
 
@@ -556,6 +567,10 @@ public class Level extends JPanel {
         // TEXT IS PUSH
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
         rules.add(text_is_push);
+
+        // INVISIBLE_WALL IS STOP
+        Rule invisible_wall_is_stop = new Rule(new SubjectName("INVISIBLE_WALL"), new IS(), new STOP());
+        rules.add(invisible_wall_is_stop);
     }
 
     /**
