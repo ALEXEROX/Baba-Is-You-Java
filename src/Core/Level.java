@@ -146,31 +146,30 @@ public class Level extends JPanel {
         new TextBlock(new IS(), level, new Position(10, 0));
         new TextBlock(new STOP(), level, new Position(11, 0));
 
-        // ROCK IS PUSH
-        new TextBlock(new SubjectName("ROCK"), level, new Position(0, 9));
+        // KEY IS PUSH
+        new TextBlock(new SubjectName("KEY"), level, new Position(4, 0));
+        new TextBlock(new IS(), level, new Position(5, 0));
+        new TextBlock(new PUSH(), level, new Position(6, 0));
+
+        // KEY IS OPEN
+        new TextBlock(new SubjectName("KEY"), level, new Position(0, 9));
         new TextBlock(new IS(), level, new Position(1, 9));
-        new TextBlock(new PUSH(), level, new Position(2, 9));
+        new TextBlock(new OPEN(), level, new Position(2, 9));
+
+        // DOOR IS SHUT
+        new TextBlock(new SubjectName("DOOR"), level, new Position(4, 9));
+        new TextBlock(new IS(), level, new Position(5, 9));
+        new TextBlock(new SHUT(), level, new Position(6, 9));
 
         // FLAG IS WIN
         new TextBlock(new SubjectName("FLAG"), level, new Position(9, 9));
         new TextBlock(new IS(), level, new Position(10, 9));
         new TextBlock(new WIN(), level, new Position(11, 9));
 
-        // Внутренние стены
-        for(int i = 3; i < 9; i++){
-            new Subject("WALL", level, new Position(i, 4));
-        }
-
-        // Камни
-        new Subject("ROCK", level, new Position(4, 3));
-        new Subject("ROCK", level, new Position(5, 3));
-        new Subject("ROCK", level, new Position(6, 3));
-
-        // BABA
-        new Subject("BABA", level, new Position(1, 5));
-
-        // FLAG
-        new Subject("FLAG", level, new Position(7, 5));
+        new Subject("BABA", level,new Position(3, 6));
+        new Subject("KEY", level,new Position(5, 6));
+        new Subject("DOOR", level,new Position(7, 6));
+        new Subject("FLAG", level,new Position(9, 6));
 
         return level;
     }
@@ -286,8 +285,8 @@ public class Level extends JPanel {
      * @param direction навправление движения объектов
      */
     private void releaseInteractions(Direction direction) {
-        for(GameObject gameObject : gameObjects) {
-            releaseInteractionsInCell(gameObject.getNextPosition(), direction);
+        for(int index = 0; index < gameObjects.size(); index++) {
+            releaseInteractionsInCell(gameObjects.get(index).getNextPosition(), direction);
         }
     }
 
