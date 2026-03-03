@@ -80,8 +80,8 @@ public class Level extends JPanel {
         }
 
         // Камни
-        for(int i = 0; i < 6; i++){
-            new Subject("ROCK", level, new Position(8, i+2));
+        for(int i = 2; i < 8; i++){
+            new Subject("ROCK", level, new Position(8, i));
         }
 
         // BABA
@@ -106,10 +106,10 @@ public class Level extends JPanel {
         new TextBlock(new IS(), level, new Position(8, 0));
         new TextBlock(new STOP(), level, new Position(9, 0));
 
-        // ROCK IS PUSH
+        // ROCK IS DEFEAT
         new TextBlock(new SubjectName("ROCK"), level, new Position(0, 7));
         new TextBlock(new IS(), level, new Position(1, 7));
-        new TextBlock(new PUSH(), level, new Position(2, 7));
+        new TextBlock(new DEFEAT(), level, new Position(2, 7));
 
         // FLAG IS WIN
         new TextBlock(new SubjectName("FLAG"), level, new Position(7, 7));
@@ -286,8 +286,8 @@ public class Level extends JPanel {
      * @param direction навправление движения объектов
      */
     private void releaseInteractions(Direction direction) {
-        for(GameObject gameObject : gameObjects) {
-            releaseInteractionsInCell(gameObject.getNextPosition(), direction);
+        for(int index = 0; index < gameObjects.size(); index++) {
+                releaseInteractionsInCell(gameObjects.get(index).getNextPosition(), direction);
         }
     }
 
