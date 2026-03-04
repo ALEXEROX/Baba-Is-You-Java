@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class LoseOverlay extends JPanel {
     private BabaIsYouWindow gameWindow;
+    private static final String FONT = "Fixedsys Excelsior 3.01";
 
     public LoseOverlay(BabaIsYouWindow gameWindow) {
         this.gameWindow = gameWindow;
@@ -17,7 +18,7 @@ public class LoseOverlay extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel loseLabel = new JLabel("YOU LOSE!");
-        loseLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        loseLabel.setFont(new Font(FONT, Font.BOLD, 48));
         loseLabel.setForeground(Color.RED);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -25,18 +26,20 @@ public class LoseOverlay extends JPanel {
         add(loseLabel, gbc);
 
         JButton menuButton = new JButton("Main Menu");
+        menuButton.setFont(new Font(FONT, Font.BOLD, 32));
         menuButton.setBackground(Color.BLACK);
         menuButton.setForeground(Color.WHITE);
-        menuButton.setPreferredSize(new Dimension(200, 50));
+        menuButton.setPreferredSize(new Dimension(250, 50));
         menuButton.addActionListener(e -> gameWindow.switchToMenuView());
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(menuButton, gbc);
 
         JButton retryButton = new JButton("Try Again");
+        retryButton.setFont(new Font(FONT, Font.BOLD, 32));
         retryButton.setBackground(Color.BLACK);
         retryButton.setForeground(Color.WHITE);
-        retryButton.setPreferredSize(new Dimension(200, 50));
+        retryButton.setPreferredSize(new Dimension(250, 50));
         retryButton.addActionListener(e -> gameWindow.restartCurrentLevel());
         gbc.gridx = 0;
         gbc.gridy = 2;

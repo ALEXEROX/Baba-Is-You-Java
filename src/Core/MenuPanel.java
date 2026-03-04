@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public class MenuPanel extends JPanel {
     private BabaIsYouWindow gameWindow;
+    private static final String FONT = "Fixedsys Excelsior 3.01";
 
     public MenuPanel(BabaIsYouWindow gameWindow) {
         this.gameWindow = gameWindow;
@@ -22,7 +23,7 @@ public class MenuPanel extends JPanel {
 
         // Заголовок
         JLabel titleLabel = new JLabel("BABA IS YOU");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 64));
+        titleLabel.setFont(new Font(FONT, Font.BOLD, 64));
         titleLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -31,6 +32,7 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 1
         JButton level1Button = new JButton("Level 1");
+        level1Button.setFont(new Font(FONT, Font.BOLD, 32));
         level1Button.setBackground(Color.BLACK);
         level1Button.setForeground(Color.WHITE);
         level1Button.setPreferredSize(new Dimension(200, 50));
@@ -48,6 +50,7 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 2
         JButton level2Button = new JButton("Level 2");
+        level2Button.setFont(new Font(FONT, Font.BOLD, 32));
         level2Button.setBackground(Color.BLACK);
         level2Button.setForeground(Color.WHITE);
         level2Button.setPreferredSize(new Dimension(200, 50));
@@ -64,6 +67,7 @@ public class MenuPanel extends JPanel {
 
         // Кнопка для уровня 3
         JButton level3Button = new JButton("Level 3");
+        level3Button.setFont(new Font(FONT, Font.BOLD, 32));
         level3Button.setBackground(Color.BLACK);
         level3Button.setForeground(Color.WHITE);
         level3Button.setPreferredSize(new Dimension(200, 50));
@@ -81,6 +85,7 @@ public class MenuPanel extends JPanel {
 
         // Кнопка выхода
         JButton exitButton = new JButton("Exit");
+        exitButton.setFont(new Font(FONT, Font.BOLD, 32));
         exitButton.setBackground(Color.BLACK);
         exitButton.setForeground(Color.WHITE);
         exitButton.setPreferredSize(new Dimension(200, 50));
