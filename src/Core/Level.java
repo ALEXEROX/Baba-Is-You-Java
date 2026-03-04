@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Level extends JPanel {
+public class Level{
 
     //========================Константы=============================
 
@@ -32,7 +32,6 @@ public class Level extends JPanel {
     public Level(int width, int height){
         this.width = width; this.height = height;
         gameObjects = new ArrayList<>();
-        createScreen();
         buildBorder();
         makeDefaultRules();
     }
@@ -200,9 +199,8 @@ public class Level extends JPanel {
         calculateRules();
         releaseRules();
 
-        // Обновляем состояние уровня (победа/поражение и перерисовка)
+        // Обновляем состояние уровня
         checkSuccess();
-        repaint();
     }
 
     /**
@@ -573,16 +571,6 @@ public class Level extends JPanel {
         rules.add(invisible_wall_is_stop);
     }
 
-    /**
-     * Создает окно, закрашенное BACKGROUND_COLOR определенного размера
-     */
-    private void createScreen() {
-        setBounds(0, 0, width * CELL_SIZE, height * CELL_SIZE);
-        setPreferredSize(new Dimension(width * CELL_SIZE, height * CELL_SIZE) );
-        setBackground(BACKGOUND_COLOR);
-        revalidate();
-    }
-
 
     //================================Гетеры-сетеры===================================
 
@@ -631,49 +619,11 @@ public class Level extends JPanel {
         return id;
     }
 
-
-    //=================================РИСОВАНИЕ===================================
-
-    @Override
-    public void paint(Graphics g){
-        super.paint(g);
-
-        drawField(g);
-        drawGameObjects(g);
+    public int getWidth(){
+        return width;
     }
 
-    /**
-     * Закрашивает окно фоновым цветом в соответствии с размером уровня
-     */
-    private void drawField(Graphics g){
-        g.setColor(BACKGOUND_COLOR);
-        g.fillRect(0, 0, width * CELL_SIZE, height * CELL_SIZE);
-    }
-
-    /**
-     * Рисует все объекты на уровне
-     */
-    private void drawGameObjects(Graphics g) {
-        for (GameObject gameObject : gameObjects) {
-            drawGameObject(gameObject, g);
-        }
-    }
-
-    /**
-     * Рисует GameObject
-     */
-    private void drawGameObject(GameObject gameObject, Graphics g) {
-        TexturePaint texture = new TexturePaint(gameObject.getImage(), new Rectangle(CELL_SIZE, CELL_SIZE));
-        Position pos = gameObject.getPosition();
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setPaint(texture);
-        g2d.fillRect(pos.getX()*CELL_SIZE, pos.getY()*CELL_SIZE, CELL_SIZE, CELL_SIZE);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(width * CELL_SIZE,
-                height * CELL_SIZE);
+    public int getHeight() {
+        return height;
     }
 }

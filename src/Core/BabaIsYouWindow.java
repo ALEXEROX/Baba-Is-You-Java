@@ -17,7 +17,7 @@ public class BabaIsYouWindow extends JFrame {
 
     // Визуал
     private JLayeredPane layeredPane;
-    private JPanel levelContainer;
+    private LevelPanel levelPanel;
     private WinOverlay winOverlay;
     private LoseOverlay loseOverlay;
     private MenuPanel menuPanel;
@@ -36,12 +36,11 @@ public class BabaIsYouWindow extends JFrame {
      * Загружает уровен для его отображения в окне
      */
     public void loadLevel(Level level){
-        if(currentlevel != null) {
-            levelContainer.remove(currentlevel);
-        }
+        layeredPane.remove(levelPanel);
 
         currentlevel = level;
-        levelContainer.add(currentlevel, BorderLayout.CENTER);
+        levelPanel = new LevelPanel(currentlevel);
+        layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
 
         // Обновляем размеры всех компонентов под новый уровень
         updateAllSizes();
@@ -50,7 +49,7 @@ public class BabaIsYouWindow extends JFrame {
         menuPanel.setVisible(false);
         winOverlay.setVisible(false);
         loseOverlay.setVisible(false);
-        levelContainer.setVisible(true);
+        levelPanel.setVisible(true);
 
         currentlevel.makeStep(Direction.STAY);
         this.requestFocusInWindow();
@@ -60,8 +59,8 @@ public class BabaIsYouWindow extends JFrame {
      * Обновляет размеры всех компонентов под текущий уровень
      */
     private void updateAllSizes() {
-        if (currentlevel != null) {
-            Dimension levelSize = currentlevel.getPreferredSize();
+        if (levelPanel.getCurrentLevel() != null) {
+            Dimension levelSize = levelPanel.getPreferredSize();
 
             // Обновляем размер основного окна
             setSize(levelSize.width, levelSize.height);
@@ -71,7 +70,7 @@ public class BabaIsYouWindow extends JFrame {
             layeredPane.setSize(levelSize);
 
             // Обновляем размеры всех компонентов
-            levelContainer.setBounds(0, 0, levelSize.width, levelSize.height);
+            levelPanel.setBounds(0, 0, levelSize.width, levelSize.height);
             menuPanel.setBounds(0, 0, levelSize.width, levelSize.height);
             winOverlay.setBounds(0, 0, levelSize.width, levelSize.height);
             loseOverlay.setBounds(0, 0, levelSize.width, levelSize.height);
@@ -95,13 +94,9 @@ public class BabaIsYouWindow extends JFrame {
         Dimension initialSize = new Dimension(1200, 750);
         layeredPane.setPreferredSize(initialSize);
 
-        // Контейнер для уровня (будет на заднем плане)
-        levelContainer = new JPanel(new BorderLayout());
-        levelContainer.setBounds(0, 0, initialSize.width, initialSize.height);
-
-        // Создаем начальный уровень для инициализации
+        // Создаем начальный уровень и панель к нему
         currentlevel = new Level(16, 10);
-        levelContainer.add(currentlevel, BorderLayout.CENTER);
+        levelPanel = new LevelPanel(currentlevel);
 
         // Создаем оверлеи (полупрозрачные)
         winOverlay = new WinOverlay(this);
@@ -117,7 +112,7 @@ public class BabaIsYouWindow extends JFrame {
         menuPanel.setBounds(0, 0, initialSize.width, initialSize.height);
 
         // Добавляем все в layeredPane с разными уровнями
-        layeredPane.add(levelContainer, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(winOverlay, JLayeredPane.MODAL_LAYER);
         layeredPane.add(loseOverlay, JLayeredPane.MODAL_LAYER);
@@ -126,7 +121,7 @@ public class BabaIsYouWindow extends JFrame {
 
         // Показываем меню
         menuPanel.setVisible(true);
-        levelContainer.setVisible(false);
+        levelPanel.setVisible(false);
     }
 
     /**
@@ -198,7 +193,7 @@ public class BabaIsYouWindow extends JFrame {
      * Проверяет, виден ли уровень (не меню и не оверлеи)
      */
     private boolean isLevelVisible() {
-        return levelContainer.isVisible() &&
+        return levelPanel.isVisible() &&
                 !winOverlay.isVisible() &&
                 !loseOverlay.isVisible();
     }
@@ -235,7 +230,7 @@ public class BabaIsYouWindow extends JFrame {
     private void lose() {
         winOverlay.setVisible(false);
         loseOverlay.setVisible(true);
-        levelContainer.setVisible(true);
+        levelPanel.setVisible(true);
         // Не меняем размер окна при поражении
         this.requestFocusInWindow();
     }
@@ -246,7 +241,7 @@ public class BabaIsYouWindow extends JFrame {
     private void win() {
         loseOverlay.setVisible(false);
         winOverlay.setVisible(true);
-        levelContainer.setVisible(true);
+        levelPanel.setVisible(true);
         // Не меняем размер окна при победе
         this.requestFocusInWindow();
     }
@@ -258,7 +253,7 @@ public class BabaIsYouWindow extends JFrame {
         menuPanel.setVisible(false);
         winOverlay.setVisible(false);
         loseOverlay.setVisible(false);
-        levelContainer.setVisible(true);
+        levelPanel.setVisible(true);
         // Размер уже должен быть правильным после loadLevel
         this.requestFocusInWindow();
     }
@@ -270,7 +265,7 @@ public class BabaIsYouWindow extends JFrame {
         menuPanel.setVisible(true);
         winOverlay.setVisible(false);
         loseOverlay.setVisible(false);
-        levelContainer.setVisible(false);
+        levelPanel.setVisible(false);
 
         // Возвращаем размер для меню
         Dimension menuSize = menuPanel.getPreferredSize();
