@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class YOU extends Feature {
 
     public YOU(){
-        _word = "YOU";
+        word = "YOU";
     }
 
     @Override

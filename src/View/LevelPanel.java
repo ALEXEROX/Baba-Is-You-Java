@@ -12,14 +12,14 @@ public class LevelPanel extends JPanel {
 
     private static final int CELL_SIZE = 75;
     private static final Color BACKGOUND_COLOR = Color.BLACK;
-    private static final int FRAMERATE = 60;
+    private static final int FRAME_RATE = 60;
     private static Level currentLevel;
 
     public LevelPanel(Level level){
         currentLevel = level;
         createPanel();
 
-        Timer framerateTimer = new Timer(1000 / FRAMERATE, new AbstractAction() {
+        Timer framerateTimer = new Timer(1000 / FRAME_RATE, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 repaint();

@@ -13,7 +13,6 @@ public class BabaIsYouWindow extends JFrame {
 
     // Логика
     private Level currentlevel;
-    private Status status;
     private KeyListener keyListener;
 
     // Визуал
@@ -214,7 +213,7 @@ public class BabaIsYouWindow extends JFrame {
     private void releaseDirection(Direction direction) {
         if(direction != null) {
             currentlevel.makeStep(direction);
-            status = currentlevel.checkSuccess();
+            Status status = currentlevel.checkSuccess();
 
             if(status == Status.WIN){
                 win();

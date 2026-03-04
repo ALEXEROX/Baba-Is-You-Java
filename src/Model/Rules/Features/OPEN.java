@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class OPEN extends Feature {
 
     public OPEN(){
-        _word = "OPEN";
+        word = "OPEN";
     }
 
     @Override

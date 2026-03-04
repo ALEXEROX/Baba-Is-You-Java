@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class WIN extends Feature {
 
     public WIN(){
-        _word = "WIN";
+        word = "WIN";
     }
 
     @Override

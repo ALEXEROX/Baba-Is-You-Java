@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class DEFEAT extends Feature {
 
     public DEFEAT(){
-        _word = "DEFEAT";
+        word = "DEFEAT";
     }
 
     @Override

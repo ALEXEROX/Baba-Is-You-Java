@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuPanel extends JPanel {
-    private BabaIsYouWindow gameWindow;
+    private final BabaIsYouWindow gameWindow;
     private static final String FONT = "Fixedsys Excelsior 3.01";
 
     public MenuPanel(BabaIsYouWindow gameWindow) {

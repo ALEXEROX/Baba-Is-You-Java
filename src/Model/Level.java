@@ -14,14 +14,14 @@ public class Level{
 
     //========================Константы=============================
 
-    public static final int CELL_SIZE = 75;
-    public static final Color BACKGOUND_COLOR = Color.BLACK;
+    private static final int CELL_SIZE = 75;
+    private static final Color BACKGOUND_COLOR = Color.BLACK;
 
 
     //==========================Поля================================
 
-    public final int width;
-    public final int height;
+    private final int width;
+    private final int height;
     private List<GameObject> gameObjects;
     private HashSet<Rule> rules;
     private String id;

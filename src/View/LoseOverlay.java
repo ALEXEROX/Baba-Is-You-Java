@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LoseOverlay extends JPanel {
-    private BabaIsYouWindow gameWindow;
+    private final BabaIsYouWindow gameWindow;
     private static final String FONT = "Fixedsys Excelsior 3.01";
 
     public LoseOverlay(BabaIsYouWindow gameWindow) {

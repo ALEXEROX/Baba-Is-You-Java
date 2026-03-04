@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class SHUT extends Feature {
 
     public SHUT(){
-        _word = "SHUT";
+        word = "SHUT";
     }
 
     @Override

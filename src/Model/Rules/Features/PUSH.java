@@ -6,7 +6,7 @@ import Model.Rules.*;
 public class PUSH extends Feature {
 
     public PUSH(){
-        _word = "PUSH";
+        word = "PUSH";
     }
 
     @Override

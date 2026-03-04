@@ -11,8 +11,8 @@ public class TextBlock extends GameObject {
     private static final Color ACTIVE_COLOR = Color.WHITE;
     private static final String FONT = "Fixedsys Excelsior 3.01";
 
-    private RuleText _ruleText;
-    private Color _color;
+    private RuleText ruleText;
+    private Color color;
 
     public TextBlock(RuleText ruleText, Level level, Position pos){
         super(GameObjectType.TEXT, "TEXT", level, pos);
@@ -20,12 +20,12 @@ public class TextBlock extends GameObject {
     }
 
     public RuleText getRuleText(){
-        return _ruleText;
+        return ruleText;
     }
 
     private void createText(RuleText ruleText){
-        _ruleText = ruleText; _color = INACTIVE_COLOR;
-        texture = createOptimalTextImage(_ruleText.getText());
+        this.ruleText = ruleText; color = INACTIVE_COLOR;
+        texture = createOptimalTextImage(this.ruleText.getText());
     }
 
     /**
@@ -52,7 +52,7 @@ public class TextBlock extends GameObject {
                     line1 = words[0];
                     StringBuilder sb = new StringBuilder();
                     for (int i = 1; i < words.length; i++) {
-                        if (sb.length() > 0) sb.append(" ");
+                        if (!sb.isEmpty()) sb.append(" ");
                         sb.append(words[i]);
                     }
                     line2 = sb.toString();
@@ -82,7 +82,7 @@ public class TextBlock extends GameObject {
             int x1 = (100 - fm.stringWidth(line1)) / 2;
             int x2 = (100 - fm.stringWidth(line2)) / 2;
 
-            g2d.setColor(_color);
+            g2d.setColor(color);
             g2d.drawString(line1, x1, y1);
             g2d.drawString(line2, x2, y2);
         } else {
@@ -95,7 +95,7 @@ public class TextBlock extends GameObject {
             int x = (100 - fm.stringWidth(text)) / 2;
             int y = (100 - fm.getHeight()) / 2 + fm.getAscent();
 
-            g2d.setColor(_color);
+            g2d.setColor(color);
             g2d.drawString(text, x, y);
         }
 
@@ -169,15 +169,15 @@ public class TextBlock extends GameObject {
      * Активирует (подсвечивает) текст
      */
     public void activate(){
-        _color = ACTIVE_COLOR;
-        texture = createOptimalTextImage(_ruleText.getText());
+        color = ACTIVE_COLOR;
+        texture = createOptimalTextImage(ruleText.getText());
     }
 
     /**
      * Деактивирует (приглушает) текст
      */
     public void deactivate(){
-        _color = INACTIVE_COLOR;
-        texture = createOptimalTextImage(_ruleText.getText());
+        color = INACTIVE_COLOR;
+        texture = createOptimalTextImage(ruleText.getText());
     }
 }

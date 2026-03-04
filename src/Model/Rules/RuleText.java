@@ -1,10 +1,10 @@
 package Model.Rules;
 
 public abstract class RuleText {
-    protected String _word;
+    protected String word;
 
     public String getText(){
-        return _word;
+        return word;
     }
     public boolean isOperand(){
         return false;

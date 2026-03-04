@@ -9,7 +9,7 @@ import java.util.*;
 public class IS extends Operator {
 
     public IS(){
-        _word = "IS";
+        word = "IS";
     }
 
     @Override
