@@ -1,6 +1,6 @@
 package Model.Rules;
 
-public abstract class RuleText {
+public abstract class RuleWord {
     protected String word;
 
     public String getText(){

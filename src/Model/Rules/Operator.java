@@ -2,7 +2,7 @@ package Model.Rules;
 
 import Model.Level;
 
-public abstract class Operator extends RuleText {
+public abstract class Operator extends RuleWord {
 
     /**
      * Может ли оператор составить правило между двумя операндами

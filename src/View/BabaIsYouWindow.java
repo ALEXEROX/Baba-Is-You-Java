@@ -2,6 +2,7 @@ package View;
 
 import Model.GameObjects.*;
 import Model.Level;
+import Model.LevelBuilder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,7 @@ public class BabaIsYouWindow extends JFrame {
     // Логика
     private Level currentlevel;
     private KeyListener keyListener;
+    private Condition condition;
 
     // Визуал
     private JLayeredPane layeredPane;
@@ -29,7 +31,7 @@ public class BabaIsYouWindow extends JFrame {
         createKeyListener();
     }
 
-    
+
     //=======================Управление-окном===========================
 
     /**
@@ -134,15 +136,15 @@ public class BabaIsYouWindow extends JFrame {
     //==============================Уровни==============================
 
     public Level level1(){
-        return Level.createLevel1();
+        return LevelBuilder.createLevel1();
     }
 
     public Level level2(){
-        return Level.createLevel2();
+        return LevelBuilder.createLevel2();
     }
 
     public Level level3(){
-        return Level.createLevel3();
+        return LevelBuilder.createLevel3();
     }
 
     //===================Обработчик-событий-клавиатуры==================
@@ -183,6 +185,13 @@ public class BabaIsYouWindow extends JFrame {
                 releaseDirection(direction);
             }
         }
+
+        if(condition == Condition.WIN){
+            win();
+        }
+        else if(condition == Condition.LOSE){
+            lose();
+        }
     }
 
     /**
@@ -209,14 +218,7 @@ public class BabaIsYouWindow extends JFrame {
     private void releaseDirection(Direction direction) {
         if(direction != null) {
             currentlevel.makeStep(direction);
-            Status status = currentlevel.checkSuccess();
-
-            if(status == Status.WIN){
-                win();
-            }
-            else if(status == Status.LOSE){
-                lose();
-            }
+            condition = currentlevel.checkSuccess();
         }
     }
 

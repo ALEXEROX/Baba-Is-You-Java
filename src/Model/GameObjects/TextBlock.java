@@ -11,21 +11,21 @@ public class TextBlock extends GameObject {
     private static final Color ACTIVE_COLOR = Color.WHITE;
     private static final String FONT = "Fixedsys Excelsior 3.01";
 
-    private RuleText ruleText;
+    private RuleWord ruleWord;
     private Color color;
 
-    public TextBlock(RuleText ruleText, Level level, Position pos){
+    public TextBlock(RuleWord ruleWord, Level level, Position pos){
         super(GameObjectType.TEXT, "TEXT", level, pos);
-        createText(ruleText);
+        createText(ruleWord);
     }
 
-    public RuleText getRuleText(){
-        return ruleText;
+    public RuleWord getRuleText(){
+        return ruleWord;
     }
 
-    private void createText(RuleText ruleText){
-        this.ruleText = ruleText; color = INACTIVE_COLOR;
-        texture = createOptimalTextImage(this.ruleText.getText());
+    private void createText(RuleWord ruleWord){
+        this.ruleWord = ruleWord; color = INACTIVE_COLOR;
+        texture = createOptimalTextImage(this.ruleWord.getText());
     }
 
     /**
@@ -170,7 +170,7 @@ public class TextBlock extends GameObject {
      */
     public void activate(){
         color = ACTIVE_COLOR;
-        texture = createOptimalTextImage(ruleText.getText());
+        texture = createOptimalTextImage(ruleWord.getText());
     }
 
     /**
@@ -178,6 +178,6 @@ public class TextBlock extends GameObject {
      */
     public void deactivate(){
         color = INACTIVE_COLOR;
-        texture = createOptimalTextImage(ruleText.getText());
+        texture = createOptimalTextImage(ruleWord.getText());
     }
 }
