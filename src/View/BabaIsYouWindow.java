@@ -27,10 +27,56 @@ public class BabaIsYouWindow extends JFrame {
     public BabaIsYouWindow(){
         initializeComponents();
         createKeyListener();
-        buildWindow();
     }
 
+    
     //=======================Управление-окном===========================
+
+    /**
+     * Создает физуальные компоненты
+     */
+    private void initializeComponents(){
+        layeredPane = new JLayeredPane();
+
+        // Начальный размер (пока нет уровня)
+        Dimension initialSize = new Dimension(1200, 750);
+        layeredPane.setPreferredSize(initialSize);
+
+        // Создаем начальный уровень и панель к нему
+        currentlevel = new Level(16, 10);
+        levelPanel = new LevelPanel(currentlevel);
+
+        // Создаем оверлеи (полупрозрачные)
+        winOverlay = new WinOverlay(this);
+        winOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
+        winOverlay.setVisible(false);
+
+        loseOverlay = new LoseOverlay(this);
+        loseOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
+        loseOverlay.setVisible(false);
+
+        // Меню
+        menuPanel = new MenuPanel(this);
+        menuPanel.setBounds(0, 0, initialSize.width, initialSize.height);
+
+        // Добавляем все в layeredPane с разными уровнями
+        layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(winOverlay, JLayeredPane.MODAL_LAYER);
+        layeredPane.add(loseOverlay, JLayeredPane.MODAL_LAYER);
+
+        setContentPane(layeredPane);
+
+        // Показываем меню
+        menuPanel.setVisible(true);
+        levelPanel.setVisible(false);
+
+        pack();
+        this.setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
 
     /**
      * Загружает уровен для его отображения в окне
@@ -84,56 +130,6 @@ public class BabaIsYouWindow extends JFrame {
         }
     }
 
-    /**
-     * Создает физуальные компоненты
-     */
-    private void initializeComponents(){
-        layeredPane = new JLayeredPane();
-
-        // Начальный размер (пока нет уровня)
-        Dimension initialSize = new Dimension(1200, 750);
-        layeredPane.setPreferredSize(initialSize);
-
-        // Создаем начальный уровень и панель к нему
-        currentlevel = new Level(16, 10);
-        levelPanel = new LevelPanel(currentlevel);
-
-        // Создаем оверлеи (полупрозрачные)
-        winOverlay = new WinOverlay(this);
-        winOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
-        winOverlay.setVisible(false);
-
-        loseOverlay = new LoseOverlay(this);
-        loseOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
-        loseOverlay.setVisible(false);
-
-        // Меню
-        menuPanel = new MenuPanel(this);
-        menuPanel.setBounds(0, 0, initialSize.width, initialSize.height);
-
-        // Добавляем все в layeredPane с разными уровнями
-        layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
-        layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
-        layeredPane.add(winOverlay, JLayeredPane.MODAL_LAYER);
-        layeredPane.add(loseOverlay, JLayeredPane.MODAL_LAYER);
-
-        setContentPane(layeredPane);
-
-        // Показываем меню
-        menuPanel.setVisible(true);
-        levelPanel.setVisible(false);
-    }
-
-    /**
-     * Создает окно
-     */
-    private void buildWindow(){
-        pack();
-        this.setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
 
     //==============================Уровни==============================
 
