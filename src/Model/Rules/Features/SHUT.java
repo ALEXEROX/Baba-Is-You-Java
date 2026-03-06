@@ -16,6 +16,8 @@ public class SHUT extends Feature {
 
     @Override
     public void interaction(GameObject first, GameObject second, Direction direction) {
-
+        if(!second.hasFeature(OPEN.class)){
+            second.cancelMove();
+        }
     }
 }
