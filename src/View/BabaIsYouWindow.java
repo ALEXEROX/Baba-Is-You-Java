@@ -132,21 +132,6 @@ public class BabaIsYouWindow extends JFrame {
         }
     }
 
-
-    //==============================Уровни==============================
-
-    public Level level1(){
-        return LevelBuilder.createLevel1();
-    }
-
-    public Level level2(){
-        return LevelBuilder.createLevel2();
-    }
-
-    public Level level3(){
-        return LevelBuilder.createLevel3();
-    }
-
     //===================Обработчик-событий-клавиатуры==================
 
     private void createKeyListener() {

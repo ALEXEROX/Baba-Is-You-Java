@@ -2,6 +2,8 @@ package View;
 
 
 
+import Model.LevelBuilder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -41,7 +43,7 @@ public class MenuPanel extends JPanel {
         level1Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameWindow.loadLevel(gameWindow.level1());
+                gameWindow.loadLevel(LevelBuilder.createLevel1());
                 gameWindow.switchToGameView();
             }
         });
@@ -59,7 +61,7 @@ public class MenuPanel extends JPanel {
         level2Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameWindow.loadLevel(gameWindow.level2());
+                gameWindow.loadLevel(LevelBuilder.createLevel2());
                 gameWindow.switchToGameView();
             }
         });
@@ -76,7 +78,7 @@ public class MenuPanel extends JPanel {
         level3Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameWindow.loadLevel(gameWindow.level3());
+                gameWindow.loadLevel(LevelBuilder.createLevel3());
                 gameWindow.switchToGameView();
             }
         });
