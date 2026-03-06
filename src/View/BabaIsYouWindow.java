@@ -2,7 +2,6 @@ package View;
 
 import Model.GameObjects.*;
 import Model.Level;
-import Model.LevelBuilder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +90,7 @@ public class BabaIsYouWindow extends JFrame {
         layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
 
         // Обновляем размеры всех компонентов под новый уровень
-        updateAllSizes();
+        windowResize();
 
         // Скрываем меню и оверлеи, показываем уровень
         menuPanel.setVisible(false);
@@ -99,14 +98,14 @@ public class BabaIsYouWindow extends JFrame {
         loseOverlay.setVisible(false);
         levelPanel.setVisible(true);
 
-        currentlevel.makeStep(Direction.STAY);
+        currentlevel.processStep(Direction.STAY);
         this.requestFocusInWindow();
     }
 
     /**
      * Обновляет размеры всех компонентов под текущий уровень
      */
-    private void updateAllSizes() {
+    private void windowResize() {
         if (levelPanel.getCurrentLevel() != null) {
             Dimension levelSize = levelPanel.getPreferredSize();
 
@@ -188,7 +187,7 @@ public class BabaIsYouWindow extends JFrame {
                 !loseOverlay.isVisible();
     }
 
-    private static Direction readDirection(int key) {
+    private Direction readDirection(int key) {
         Direction direction = null;
         switch (key){
             case KeyEvent.VK_UP -> direction = Direction.UP;
@@ -202,7 +201,7 @@ public class BabaIsYouWindow extends JFrame {
 
     private void releaseDirection(Direction direction) {
         if(direction != null) {
-            currentlevel.makeStep(direction);
+            currentlevel.processStep(direction);
             condition = currentlevel.checkSuccess();
         }
     }

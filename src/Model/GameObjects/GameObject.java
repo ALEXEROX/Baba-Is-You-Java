@@ -76,7 +76,7 @@ public abstract class GameObject {
             return false;
         }
         if(hasFeature(PUSH.class)) {
-            return owner.canLetTo(currentPosition.getNeightboor(direction), direction);
+            return owner.canLetToCell(currentPosition.getNeightboor(direction), direction);
         }
         return true;
     }

@@ -23,7 +23,7 @@ public class Level{
     private final int width;
     private final int height;
     private List<GameObject> gameObjects;
-    private HashSet<Rule> rules;
+    private HashSet<Rule> currentRules;
     private String id;
 
 
@@ -67,9 +67,9 @@ public class Level{
      * Вызывается по каждому действию игрока
      * @param direction направление движения игрока
      */
-    public void makeStep(Direction direction){
+    public void processStep(Direction direction){
         // Выполняем игровые правила (движения, остановки и тп)
-        releaseFeatures(direction);
+        releaseGameObjectsFeatures(direction);
         moveGameObjects();
 
         // Пересчитывем и выполняем пересчитанные правила
@@ -91,7 +91,7 @@ public class Level{
      * @param position проверяемая ячейка
      * @param direction направление движения объектов на текущем шаге
      */
-    public boolean canLetTo(Position position, Direction direction){
+    public boolean canLetToCell(Position position, Direction direction){
         List<GameObject> gameObjects = getCellOnNextStep(position);
 
         for(GameObject gameObject : gameObjects){
@@ -99,7 +99,7 @@ public class Level{
                 return false;
             }
             if(gameObject.hasFeature(PUSH.class)){
-                if(!canLetTo(gameObject.getNextPosition().getNeightboor(direction), direction)){
+                if(!canLetToCell(gameObject.getNextPosition().getNeightboor(direction), direction)){
                     return false;
                 }
             }
@@ -112,7 +112,7 @@ public class Level{
      * Выполняет правила
      */
     private void releaseRules() {
-        for(Rule rule : rules){
+        for(Rule rule : currentRules){
             rule.release(this);
         }
     }
@@ -121,10 +121,10 @@ public class Level{
      * Выполняет все действия в соответствии с правилами
      * @param direction навправление движения объектов
      */
-    private void releaseFeatures(Direction direction){
+    private void releaseGameObjectsFeatures(Direction direction){
         sortGameObjects(direction);
-        releaseActions(direction);
-        releaseInteractions(direction);
+        performFeaturesActions(direction);
+        performFeaturesInteractions(direction);
     }
 
     /**
@@ -154,10 +154,10 @@ public class Level{
      * Например YOU - двигает объект со свойством YOU
      * @param direction навправление движения объектов
      */
-    private void releaseActions(Direction direction) {
+    private void performFeaturesActions(Direction direction) {
         for(GameObject gameObject : gameObjects){
             for(Feature feature : gameObject.getFeatures()){
-                feature.action(gameObject, direction);
+                feature.performActionOnGameObject(gameObject, direction);
             }
         }
     }
@@ -167,9 +167,9 @@ public class Level{
      * Например PUSH - пытается вытолкнуть объект, в который пытается двигаться другой объект
      * @param direction навправление движения объектов
      */
-    private void releaseInteractions(Direction direction) {
+    private void performFeaturesInteractions(Direction direction) {
         for(int index = 0; index < gameObjects.size(); index++) {
-            releaseInteractionsInCell(gameObjects.get(index).getNextPosition(), direction);
+            performInteractionsInCell(gameObjects.get(index).getNextPosition(), direction);
         }
     }
 
@@ -178,7 +178,7 @@ public class Level{
      * @param position проверяемая позиция, в которую предполагают оказаться объекты на следующем шаге
      * @param direction навправление движения объектов
      */
-    public void releaseInteractionsInCell(Position position, Direction direction){
+    private void performInteractionsInCell(Position position, Direction direction){
         List<GameObject> gameObjectsInCell = getCellOnNextStep(position);
 
         for(GameObject gameObject : gameObjectsInCell){
@@ -187,7 +187,7 @@ public class Level{
 
             for(Feature feature : gameObject.getFeatures()) {
                 for (GameObject otherGameobject : otherGameObjects) {
-                    feature.interaction(gameObject, otherGameobject, direction);
+                    feature.performInteractionBetweenGameObjects(gameObject, otherGameobject, direction);
                 }
             }
         }
@@ -196,7 +196,7 @@ public class Level{
     /**
      * Находит правила, описанные на поле
      */
-    public void calculateRules(){
+    private void calculateRules(){
         deactivateTextBlocks();
         makeDefaultRules();
         findAndHighlightRules();
@@ -207,7 +207,7 @@ public class Level{
      */
     private void findAndHighlightRules() {
         for(GameObject gameObject : gameObjects){
-            rules.addAll(findAndHighlightRulesInPosition(gameObject.getNextPosition()));
+            currentRules.addAll(findAndHighlightRulesInPosition(gameObject.getNextPosition()));
         }
     }
 
@@ -434,15 +434,15 @@ public class Level{
      * Обнуляет текущий список правил и добавляет список правил по умолчанию
      */
     public void makeDefaultRules(){
-        rules = new HashSet<>();
+        currentRules = new HashSet<>();
 
         // TEXT IS PUSH
         Rule text_is_push = new Rule(new SubjectName("TEXT"), new IS(), new PUSH());
-        rules.add(text_is_push);
+        currentRules.add(text_is_push);
 
         // INVISIBLE_WALL IS STOP
         Rule invisible_wall_is_stop = new Rule(new SubjectName("INVISIBLE_WALL"), new IS(), new STOP());
-        rules.add(invisible_wall_is_stop);
+        currentRules.add(invisible_wall_is_stop);
     }
 
 
