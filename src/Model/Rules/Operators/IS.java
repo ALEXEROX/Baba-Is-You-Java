@@ -13,12 +13,12 @@ public class IS extends Operator {
     }
 
     @Override
-    public boolean canInteract(Operand left, Operand right) {
+    public boolean canCreateRule(Operand left, Operand right) {
         return left.isSubjectName();
     }
 
     @Override
-    public void action(Level level, Operand left, Operand right) {
+    public void executeRule(Level level, Operand left, Operand right) {
         List<GameObject> gameObjects = level.getGameObjects();
         for(int index = 0; index < gameObjects.size(); index++) {
             if(gameObjects.get(index).getName().equals(left.getText())) {

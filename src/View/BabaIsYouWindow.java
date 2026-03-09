@@ -84,10 +84,7 @@ public class BabaIsYouWindow extends JFrame {
         levelPanel = new LevelPanel(currentlevel);
         layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
 
-        // Обновляем размеры всех компонентов под новый уровень
         windowResize();
-
-        // Скрываем меню и оверлеи, показываем уровень
         switchToGameView();
 
         currentlevel.processStep(Direction.STAY);
@@ -151,7 +148,7 @@ public class BabaIsYouWindow extends JFrame {
      * @param key клавиша
      */
     private void handlingKey(int key){
-        if(!isLevelVisible()) return; // Работает только находясь на уровне
+        if(!isLevelVisible()) return;
 
         switch(key){
             case KeyEvent.VK_ESCAPE -> switchToMenuView();
@@ -202,10 +199,7 @@ public class BabaIsYouWindow extends JFrame {
      * Вызывается при поражении на уровне
      */
     private void lose() {
-        winOverlay.setVisible(false);
         loseOverlay.setVisible(true);
-        levelPanel.setVisible(true);
-        // Не меняем размер окна при поражении
         this.requestFocusInWindow();
     }
 
@@ -213,10 +207,7 @@ public class BabaIsYouWindow extends JFrame {
      * Вызывается при победе на уровне
      */
     private void win() {
-        loseOverlay.setVisible(false);
         winOverlay.setVisible(true);
-        levelPanel.setVisible(true);
-        // Не меняем размер окна при победе
         this.requestFocusInWindow();
     }
 
@@ -228,7 +219,6 @@ public class BabaIsYouWindow extends JFrame {
         winOverlay.setVisible(false);
         loseOverlay.setVisible(false);
         levelPanel.setVisible(true);
-        // Размер уже должен быть правильным после loadLevel
         this.requestFocusInWindow();
     }
 

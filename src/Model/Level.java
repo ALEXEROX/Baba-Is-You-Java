@@ -249,6 +249,11 @@ public class Level{
         return rules;
     }
 
+    /**
+     * Находит фразы (3 в ряд стоящих слова)
+     * @param position позиия начала фразы
+     * @return фраза
+     */
     List<List<TextBlock>> findPhrases(Position position) {
         List<List<TextBlock>> phrases = new ArrayList<>();
         Position currentPos = position;
@@ -310,7 +315,7 @@ public class Level{
                 phrase.get(1).getRuleText() instanceof Operator secondWord &&
                 phrase.get(2) != null &&
                 phrase.get(2).getRuleText() instanceof Operand thirdWord){
-            return secondWord.canInteract(firstWord, thirdWord);
+            return secondWord.canCreateRule(firstWord, thirdWord);
         }
 
         return false;

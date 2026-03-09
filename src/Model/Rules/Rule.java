@@ -12,6 +12,6 @@ public class Rule {
     }
 
     public void release(Level level){
-        operator.action(level, leftPart, rightPart);
+        operator.executeRule(level, leftPart, rightPart);
     }
 }
