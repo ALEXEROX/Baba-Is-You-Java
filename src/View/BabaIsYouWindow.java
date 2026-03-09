@@ -43,10 +43,6 @@ public class BabaIsYouWindow extends JFrame {
         Dimension initialSize = new Dimension(1200, 750);
         layeredPane.setPreferredSize(initialSize);
 
-        // Создаем начальный уровень и панель к нему
-        currentlevel = new Level(16, 10);
-        levelPanel = new LevelPanel(currentlevel);
-
         // Создаем оверлеи (полупрозрачные)
         winOverlay = new WinOverlay(this);
         winOverlay.setBounds(0, 0, initialSize.width, initialSize.height);
@@ -61,7 +57,6 @@ public class BabaIsYouWindow extends JFrame {
         menuPanel.setBounds(0, 0, initialSize.width, initialSize.height);
 
         // Добавляем все в layeredPane с разными уровнями
-        layeredPane.add(levelPanel, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(menuPanel, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(winOverlay, JLayeredPane.MODAL_LAYER);
         layeredPane.add(loseOverlay, JLayeredPane.MODAL_LAYER);
@@ -70,7 +65,6 @@ public class BabaIsYouWindow extends JFrame {
 
         // Показываем меню
         menuPanel.setVisible(true);
-        levelPanel.setVisible(false);
 
         pack();
         this.setResizable(false);
@@ -83,7 +77,8 @@ public class BabaIsYouWindow extends JFrame {
      * Загружает уровен для его отображения в окне
      */
     public void loadLevel(Level level){
-        layeredPane.remove(levelPanel);
+        if(levelPanel != null)
+            layeredPane.remove(levelPanel);
 
         currentlevel = level;
         levelPanel = new LevelPanel(currentlevel);
@@ -93,10 +88,7 @@ public class BabaIsYouWindow extends JFrame {
         windowResize();
 
         // Скрываем меню и оверлеи, показываем уровень
-        menuPanel.setVisible(false);
-        winOverlay.setVisible(false);
-        loseOverlay.setVisible(false);
-        levelPanel.setVisible(true);
+        switchToGameView();
 
         currentlevel.processStep(Direction.STAY);
         this.requestFocusInWindow();

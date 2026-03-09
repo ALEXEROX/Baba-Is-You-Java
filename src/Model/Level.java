@@ -198,8 +198,15 @@ public class Level{
      */
     private void calculateRules(){
         deactivateTextBlocks();
+        clearGameObjectsFeatures();
         makeDefaultRules();
         findAndHighlightRules();
+    }
+
+    private void clearGameObjectsFeatures() {
+        for(GameObject gameObject : gameObjects){
+            gameObject.clearFeatures();
+        }
     }
 
     /**
@@ -217,7 +224,6 @@ public class Level{
      */
     private void deactivateTextBlocks() {
         for(GameObject gameObject : gameObjects){
-            gameObject.clearFeatures();
             if(gameObject instanceof TextBlock textBlock){
                 textBlock.deactivate();
             }
@@ -231,100 +237,79 @@ public class Level{
      */
     public HashSet<Rule> findAndHighlightRulesInPosition(Position position){
         HashSet<Rule> rules = new HashSet<>();
+        List<List<TextBlock>> phrases = findPhrases(position);
 
-        Rule rule;
-        if((rule = findAndHighlightRulesInPositionByDirection(position, Direction.RIGHT)) != null)
-            rules.add(rule);
-        if((rule = findAndHighlightRulesInPositionByDirection(position, Direction.DOWN)) != null)
-            rules.add(rule);
+        for(List<TextBlock> phrase : phrases){
+            if(isRule(phrase)){
+                rules.add(ruleFromPhrase(phrase));
+                highlightPhrase(phrase);
+            }
+        }
 
         return rules;
     }
 
-    /**
-     * Находит и выделяет правило
-     * @param position начальное положение предпологаемого правила
-     * @param direction направление чтения предпологаемого правила
-     * @return Правило
-     */
-    public Rule findAndHighlightRulesInPositionByDirection(Position position, Direction direction){
-        Rule rule = null;
-        if(direction == Direction.STAY) return rule;
+    List<List<TextBlock>> findPhrases(Position position) {
+        List<List<TextBlock>> phrases = new ArrayList<>();
+        Position currentPos = position;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.RIGHT);
+        directions.add(Direction.DOWN);
 
-        List<RuleWord> phrase = findPhrase(position, direction);
-        if(isRule(phrase)){
-            rule = ruleFromPhrase(phrase);
-            highlightRule(position, direction);
+        for (Direction direction : directions){
+            List<TextBlock> phrase = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                TextBlock textBlock = null;
+                List<GameObject> cell = getCellOnNextStep(currentPos);
+
+                for (GameObject gameObject : cell) {
+                    if (gameObject.isTextBlock()) {
+                        textBlock = ((TextBlock) gameObject);
+                        break;
+                    }
+                }
+                phrase.add(textBlock);
+                currentPos = currentPos.getNeightboor(direction);
+            }
+            phrases.add(phrase);
         }
 
-        return rule;
+        return phrases;
     }
 
     /**
      * Выделяет (подсвечивает) правило
-     * @param position начальное положение правила
-     * @param direction направлени чтения правила
+     * @param rule правило, находящееся на поле
      */
-    private void highlightRule(Position position, Direction direction) {
-        Position currentPosition = position;
-
-        for(int i = 0; i < 3; i++) {
-            List<GameObject> cell = getCellOnNextStep(currentPosition);
-            for(GameObject gameObject : cell){
-                if(gameObject instanceof TextBlock textBlock){
-                    textBlock.activate();
-                }
-            }
-            currentPosition = currentPosition.getNeightboor(direction);
+    private void highlightPhrase(List<TextBlock> rule) {
+        for(TextBlock textBlock : rule){
+            textBlock.activate();
         }
     }
 
     /**
      * Создает правило из набора RuleText
      */
-    private Rule ruleFromPhrase(List<RuleWord> phrase){
-        Operand firstWord = (Operand) phrase.get(0);
-        Operator secondWord = (Operator) phrase.get(1);
-        Operand thirdWord = (Operand) phrase.get(2);
+    private Rule ruleFromPhrase(List<TextBlock> phrase){
+        Operand firstWord = (Operand) phrase.get(0).getRuleText();
+        Operator secondWord = (Operator) phrase.get(1).getRuleText();
+        Operand thirdWord = (Operand) phrase.get(2).getRuleText();
 
         return new Rule(firstWord, secondWord, thirdWord);
-    }
-
-    /**
-     * Находит словосочетание из трех в ряд стоящих ячеек
-     * @param position положение первого слова фразы
-     * @param direction направление чтения
-     * @return Сочетание слов
-     */
-    private List<RuleWord> findPhrase(Position position, Direction direction){
-        List<RuleWord> phrase = new ArrayList<>();
-        Position currentPos = position;
-
-        for(int i = 0; i < 3; i++) {
-            RuleWord ruleWord = null;
-            List<GameObject> cell = getCellOnNextStep(currentPos);
-
-            for (GameObject gameObject : cell) {
-                if (gameObject.isTextBlock()){
-                    ruleWord = ((TextBlock) gameObject).getRuleText();
-                    break;
-                }
-            }
-            phrase.add(ruleWord);
-            currentPos = currentPos.getNeightboor(direction);
-        }
-
-        return phrase;
     }
 
     /**
      * @param phrase cписок из трех слов типа RuleText
      * @return Может ли список считаться правилом
      */
-    private boolean isRule(List<RuleWord> phrase){
-        if(phrase.get(0) instanceof Operand firstWord &&
-                phrase.get(1) instanceof Operator secondWord &&
-                phrase.get(2) instanceof Operand thirdWord){
+    private boolean isRule(List<TextBlock> phrase){
+        if(phrase.size() == 3 &&
+                phrase.get(0) != null &&
+                phrase.get(0).getRuleText() instanceof Operand firstWord &&
+                phrase.get(1) != null &&
+                phrase.get(1).getRuleText() instanceof Operator secondWord &&
+                phrase.get(2) != null &&
+                phrase.get(2).getRuleText() instanceof Operand thirdWord){
             return secondWord.canInteract(firstWord, thirdWord);
         }
 
