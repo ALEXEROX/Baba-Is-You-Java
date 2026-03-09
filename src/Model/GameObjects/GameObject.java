@@ -168,6 +168,10 @@ public abstract class GameObject {
     public void destroy(){
         owner.destroyGameObject(this);
     }
+
+
+    @Override
+    public abstract boolean equals(Object obj);
 }
 
 enum GameObjectType{

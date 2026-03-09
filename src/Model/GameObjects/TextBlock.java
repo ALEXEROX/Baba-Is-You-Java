@@ -19,7 +19,7 @@ public class TextBlock extends GameObject {
         createText(ruleWord);
     }
 
-    public RuleWord getRuleText(){
+    public RuleWord getRuleWord(){
         return ruleWord;
     }
 
@@ -179,5 +179,16 @@ public class TextBlock extends GameObject {
     public void deactivate(){
         color = INACTIVE_COLOR;
         texture = createOptimalTextImage(ruleWord.getText());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof TextBlock textBlock){
+            return textBlock.getRuleWord().equals(getRuleWord()) &&
+                    textBlock.getPosition().equals(getPosition()) &&
+                    textBlock.getNextPosition().equals(getNextPosition());
+        }
+
+        return false;
     }
 }

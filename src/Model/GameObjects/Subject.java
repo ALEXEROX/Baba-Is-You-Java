@@ -45,4 +45,15 @@ public class Subject extends GameObject {
         g2d.fillOval(0, 0, 100, 100);
         g2d.dispose();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Subject subject){
+            return subject.getName().equals(getName()) &&
+                    subject.getPosition().equals(getPosition()) &&
+                    subject.getNextPosition().equals(getNextPosition());
+        }
+
+        return false;
+    }
 }

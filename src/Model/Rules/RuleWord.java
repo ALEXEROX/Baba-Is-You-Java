@@ -6,6 +6,7 @@ public abstract class RuleWord {
     public String getText(){
         return word;
     }
+
     public boolean isOperand(){
         return false;
     }
@@ -19,6 +20,15 @@ public abstract class RuleWord {
     }
 
     public boolean isFeature(){
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof RuleWord ruleWord){
+            return ruleWord.getText().equals(getText());
+        }
+
         return false;
     }
 }

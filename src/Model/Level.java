@@ -296,9 +296,9 @@ public class Level{
      * Создает правило из набора RuleText
      */
     private Rule ruleFromPhrase(List<TextBlock> phrase){
-        Operand firstWord = (Operand) phrase.get(0).getRuleText();
-        Operator secondWord = (Operator) phrase.get(1).getRuleText();
-        Operand thirdWord = (Operand) phrase.get(2).getRuleText();
+        Operand firstWord = (Operand) phrase.get(0).getRuleWord();
+        Operator secondWord = (Operator) phrase.get(1).getRuleWord();
+        Operand thirdWord = (Operand) phrase.get(2).getRuleWord();
 
         return new Rule(firstWord, secondWord, thirdWord);
     }
@@ -310,11 +310,11 @@ public class Level{
     private boolean isRule(List<TextBlock> phrase){
         if(phrase.size() == 3 &&
                 phrase.get(0) != null &&
-                phrase.get(0).getRuleText() instanceof Operand firstWord &&
+                phrase.get(0).getRuleWord() instanceof Operand firstWord &&
                 phrase.get(1) != null &&
-                phrase.get(1).getRuleText() instanceof Operator secondWord &&
+                phrase.get(1).getRuleWord() instanceof Operator secondWord &&
                 phrase.get(2) != null &&
-                phrase.get(2).getRuleText() instanceof Operand thirdWord){
+                phrase.get(2).getRuleWord() instanceof Operand thirdWord){
             return secondWord.canCreateRule(firstWord, thirdWord);
         }
 
@@ -446,7 +446,7 @@ public class Level{
         List<GameObject> gameObjects = new ArrayList<>();
 
         for(GameObject gameObject : this.gameObjects){
-            if(gameObject.getPosition().equal(pos)){
+            if(gameObject.getPosition().equals(pos)){
                 gameObjects.add(gameObject);
             }
         }
@@ -461,7 +461,7 @@ public class Level{
         List<GameObject> gameObjects = new ArrayList<>();
 
         for(GameObject gameObject : this.gameObjects){
-            if(gameObject.getNextPosition().equal(pos)){
+            if(gameObject.getNextPosition().equals(pos)){
                 gameObjects.add(gameObject);
             }
         }

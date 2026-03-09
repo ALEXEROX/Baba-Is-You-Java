@@ -1,5 +1,7 @@
 package Model.GameObjects;
 
+import java.util.Objects;
+
 public class Position {
     private int x;
     private int y;
@@ -24,7 +26,12 @@ public class Position {
         return new Position(x + dir.getX(), y + dir.getY());
     }
 
-    public boolean equal(Position pos){
-        return x == pos.getX() && y == pos.getY();
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Position position){
+            return position.getX() == getX() && position.getY() == getY();
+        }
+
+        return false;
     }
 }
