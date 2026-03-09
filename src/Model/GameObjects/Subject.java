@@ -56,4 +56,9 @@ public class Subject extends GameObject {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return getName() + " " + getPosition();
+    }
 }

@@ -191,4 +191,9 @@ public class TextBlock extends GameObject {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "TEXT-" + getRuleWord().getText() + " " + getPosition();
+    }
 }

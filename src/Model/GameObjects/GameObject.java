@@ -172,6 +172,9 @@ public abstract class GameObject {
 
     @Override
     public abstract boolean equals(Object obj);
+
+    @Override
+    public abstract String toString();
 }
 
 enum GameObjectType{
